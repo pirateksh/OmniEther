@@ -5,9 +5,6 @@ import { Link, Router } from '../../routes';
 
 var api = require('etherscan-api').init('AR74I2J5Z4EGDEWDM11EKQYBNPJP64YGE6','rinkeby','3000');
 
-
-var api = require('etherscan-api').init('AR74I2J5Z4EGDEWDM11EKQYBNPJP64YGE6','rinkeby','3000');
-
 class TokenTrxFromAccount extends Component{
 
 	constructor(){

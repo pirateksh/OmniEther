@@ -1,24 +1,17 @@
 import React, { Component } from 'react';
 import Layout from '../../components/layout';
 import { Card, Grid, Button, Modal, Input, Form, Message, Segment } from 'semantic-ui-react';
-// import web3 from '../../ethereum/web3';
 import { Table } from 'semantic-ui-react';
 import { Link, Router } from '../../routes';
-// import { AxiosProvider, Request, Get, Delete, Head, Post, Put, Patch, withAxios } from 'react-axios';
-
-// AR74I2J5Z4EGDEWDM11EKQYBNPJP64YGE6 -> My api key
 var api = require('etherscan-api').init('AR74I2J5Z4EGDEWDM11EKQYBNPJP64YGE6','rinkeby','3000');
 
 class TokenHolders extends Component{
-
 	constructor(){
-
 		super();
 		this.state={
 			data: false
 		}
 	}
-
 	componentDidMount(){
 		let url = "https://api-rinkeby.etherscan.io/api?module=account&action=tokentx&contractaddress=0xf133adfeb68a195fd253b5742a5b7d16368204ba#balances&page=1&offset=20&sort=asc&apikey=AR74I2J5Z4EGDEWDM11EKQYBNPJP64YGE6";
 		fetch(url,{
