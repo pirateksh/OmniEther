@@ -37,8 +37,8 @@ class RequestIndex extends Component {
 			return <RequestRow 
 				key={index}
 				id={index}
-				request={request}
-				address={this.props.address}
+				request = {request}
+				address = {this.props.address}
 			/>
 		});
 	}
@@ -49,7 +49,7 @@ class RequestIndex extends Component {
 		const { Header, Row, HeaderCell, Body } = Table;
 		return (
 			<Layout>
-				<h3>Fund Request (By Manager)</h3>
+				<h3>New Child Node Creation Request (By Current Manager)</h3>
 				<div>Found {this.props.requestCount} requests.</div>
 				<ModalForm 
 					address={this.props.address}

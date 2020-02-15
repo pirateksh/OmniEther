@@ -8,7 +8,7 @@ if(typeof window !== 'undefined' && typeof window.web3 !== 'undefined') {
 } else {
 	// We are on the server *OR* the user is not running metamask
 	const provider = new Web3.providers.HttpProvider(
-		'https://rinkeby.infura.io/v3/fecaf04a298945df852fef4c456adca3'
+		'https://testnet2.matic.network'
 	);
 
 	web3 = new Web3(provider);

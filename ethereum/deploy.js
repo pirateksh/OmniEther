@@ -7,7 +7,7 @@ const compiledFactory = require('./build/Factory.json');
 // 2. Link to the node that we want to connect to in the Rinkeby Network.
 const provider = new HDWalletProvider(
 	'noodle face want dilemma honey veteran acquire business switch flash mind toilet',
-	'https://rinkeby.infura.io/v3/fecaf04a298945df852fef4c456adca3'
+	'https://testnet2.matic.network'
 );
 
 const web3 = new Web3(provider);
@@ -22,10 +22,13 @@ const deploy = async () => {
 
 	const result = await new web3.eth.Contract(JSON.parse(compiledFactory.interface))
 		.deploy({ data: compiledFactory.bytecode })
-		.send({ gas: '4564108', from: accounts[0] });
+		.send({ gas: '4964108', from: accounts[0] });
         // Gas amount decided after hit and trial in Remix
 	console.log('Contract deployed to', result.options.address);
 };	
 
 
 deploy();
+
+// Matic 0x2152CD8b7CFEF975fb498cB2eF6aaf97185c45f6
+// 

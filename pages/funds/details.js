@@ -73,7 +73,7 @@ class FundDetails extends Component {
 			},
 			{
 				header: childFunds.length.toString(),
-				meta: 'Number of Child Contracts',
+				meta: 'Number of Child Node/Contracts',
 				description: "Number of Contracts to which this Contract has alloted funds."
 			},
 			{
@@ -140,7 +140,7 @@ class FundDetails extends Component {
 											primary
 											icon='eye'
 											style={{ marginTop: 10 }}
-											content='View Child Requests'
+											content='New Node Requests by DeputyManager'
 										/>
 									</a>
 								</Link>
@@ -150,7 +150,7 @@ class FundDetails extends Component {
 											primary
 											icon='eye'
 											style={{ marginTop: 10 }}
-											content='View Manager Requests'
+											content='New Node Requests by Manager'
 										/>
 									</a>
 								</Link>
@@ -161,7 +161,7 @@ class FundDetails extends Component {
 												primary
 												icon='eye'
 												style={{ marginTop: 10 }}
-												content='View Child Funds'
+												content='View Child Node'
 											/>
 										</a>
 									</Link>

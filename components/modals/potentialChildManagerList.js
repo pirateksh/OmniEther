@@ -46,7 +46,7 @@ class ModalForm extends Component {
 					<Button 
 						onClick={() => { this.setState({ showModal: true }) }}
 						style={{ marginTop: 10}}
-						content="Child Managers"
+						content="Deputy Managers"
 						icon="eye"
 						primary
 					/>

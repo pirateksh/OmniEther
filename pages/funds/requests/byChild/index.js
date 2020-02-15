@@ -48,7 +48,7 @@ class RequestIndex extends Component {
 		const { Header, Row, HeaderCell, Body } = Table;
 		return (
 			<Layout>
-				<h3>Fund Request (By Child)</h3>
+				<h3>New Child Node/Organization Creation Request (By Current Class Deputy Manager/Potential Manager of new Child Node)</h3>
 				<div>Found {this.props.requestCount} requests.</div>
 				<ModalForm 
 					address={this.props.address}

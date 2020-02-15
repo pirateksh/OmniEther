@@ -56,7 +56,7 @@ class ModalForm extends Component {
 					<Button  
 						onClick={() => { this.setState({ showModal: true }) }}
 						style={{ marginTop: 10}}
-						content="Add Child Manager"
+						content="Add Deputy Manager"
 						icon="add circle"
 						primary
 					/>
@@ -68,7 +68,7 @@ class ModalForm extends Component {
 				      	<Message 
 			     			warning
 			     			header="Pay Attention!"
-			     			content="Potential Child Managers can only be added by Manager of this Fund."
+			     			content="Potential Child Managers can only be added by Manager of this node/organization."
 			     		/>
 			      		<Form onSubmit={this.onSubmit} error={!!this.state.errorMessage}>
 					<Form.Field>

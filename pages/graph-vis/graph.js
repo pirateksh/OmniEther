@@ -25,9 +25,9 @@ class graphs extends Component{
     static async getInitialProps(){
         let color = ["#e04141","#e09c41","#e0df41","#7be041","#41e0c9"]
         let finalNodes = []
-        finalNodes.push({id:0x81835bfB922eB03d12517CbEEB403E6b1C68e8fb,label:'Factory ',color:color[finalNodes.length%5]})
+        finalNodes.push({id:0x2152CD8b7CFEF975fb498cB2eF6aaf97185c45f6,label:'Factory ',color:color[finalNodes.length%5]})
         let tempNodes = []
-        tempNodes.push(0x81835bfB922eB03d12517CbEEB403E6b1C68e8fb)
+        tempNodes.push(0x2152CD8b7CFEF975fb498cB2eF6aaf97185c45f6)
         let finalEdges =[]
         const rootNodes = await factory.methods.getDeployedRoots().call()
         rootNodes.map(address => {
