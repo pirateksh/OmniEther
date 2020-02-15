@@ -67,13 +67,15 @@ contract Fund {
     }
     
     string public briefDescription;
-    bool isLastLevel;
+    bool public isLastLevel;
+    bool public isTenderFinalized;
     address public parent;
     // ParentFund reference can also be stored like
     // Fund parentFund = Fund(parent)
     address public manager;
     address public parentManager;
     Factory public factory;
+    address public CompanyAlloted;
     
     address[] public childFunds;
     address[] public potentialChildManagers;
@@ -90,6 +92,8 @@ contract Fund {
     
     function Fund(string description_, address newParent, address managerAddress, address factoryAddress, bool is_last_level) public {
         isLastLevel = is_last_level;
+        
+        isTenderFinalized = false;
         
         briefDescription = description_; 
 
@@ -202,7 +206,7 @@ contract Fund {
     
     function InitializingMilestone(uint amount, address company) public restricted{
         // Can be made private
-        require(isPotentialChildManager[company]);
+        require(CompanyAlloted == company);
         require(isLastLevel);
         require(amount <= address(this).balance);
         company.transfer(amount); // can TRANSFER TOKEN
@@ -266,4 +270,91 @@ contract Fund {
             isLastLevel
         );
     }
+
+
+    //Added NEW Bidding Code
+    
+    address public tenderAddress;
+    function FloatTender() public restricted{ 
+        //CHECKED
+        require(!isTenderFinalized);
+        require(isLastLevel);
+        require(tenderAddress == 0);
+        tenderAddress = new Bidding(msg.sender);
+    }
+
+    function FinalizeTender() public restricted{ 
+        // CHECKED
+        require(!isTenderFinalized);
+        require(isLastLevel);
+        require(CompanyAlloted == 0);
+        require(tenderAddress !=0 );
+        Bidding(tenderAddress).chooseLowestBidder(msg.sender);
+        CompanyAlloted =  Bidding(tenderAddress).finalCompany();
+        isTenderFinalized = true;
+    }
+}
+
+
+contract Bidding{
+   
+    address public manager;
+    uint public lowestBid;
+    address public finalCompany;
+    bool public tenderAlloted;
+    
+    function Bidding(address current_manager) public {
+        tenderAlloted = false;
+        manager = current_manager;
+    }
+   
+    address[] public eligibleCompaniesList;
+    mapping(address => bool) public isEligibleCompany;
+   
+    mapping(address => uint) public bids;
+    address[] public biddersList;
+   
+   
+    function addEligibleCompany(address company) public {
+        // CHECKED
+        require(!tenderAlloted);
+        require(msg.sender == manager);
+        require(!isEligibleCompany[company]);
+        eligibleCompaniesList.push(company);
+        isEligibleCompany[company] = true;
+    }
+   
+    function bid(uint amount) public{
+        // CHECKED
+        require(!tenderAlloted);
+        require(isEligibleCompany[msg.sender]);
+        require(bids[msg.sender] == 0);
+        bids[msg.sender] = amount;
+        biddersList.push(msg.sender);
+        if(biddersList.length == 1){
+            lowestBid = amount;
+            finalCompany = msg.sender;
+        }
+        else {
+            
+            if(amount < lowestBid){
+                lowestBid = amount;
+                finalCompany = msg.sender;
+            }
+            
+        }
+    }
+   
+    function chooseLowestBidder(address manager_) public {
+        // CHECKED
+        require(!tenderAlloted);
+        require(manager_ == manager);
+        require(biddersList.length >= 1);
+        tenderAlloted = true;
+    }
+
+    function getEligibleCompanyList() public view returns(address[]) {
+        return eligibleCompaniesList;
+    }
+   
 }
