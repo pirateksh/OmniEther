@@ -72,8 +72,6 @@ class FactoryIndex extends Component {
 						<Grid.Column width={4}>
 							<Segment textAlign="center">
 							
-								
-
 							</Segment>
 						</Grid.Column>
 

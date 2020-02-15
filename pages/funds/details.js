@@ -1,6 +1,6 @@
 // Shows users detail about particular Fund
 // Here we will have Campaign's address from the URL.
-
+import Graph from "react-graph-vis";
 import React, { Component } from 'react';
 import Layout from '../../components/layout';
 import Fund from '../../ethereum/fund';
@@ -14,7 +14,7 @@ import { Link, Router } from '../../routes';
 
 class FundDetails extends Component {
 
-
+	
 	static async getInitialProps(props) {
 		const fund = Fund(props.query.contractAddress);
 		const summary = await fund.methods.getSummary().call();
@@ -115,7 +115,6 @@ class FundDetails extends Component {
 						</Grid.Column>
 					</Grid.Row>
 				</Grid>
-	
 				<Grid>
 					<Grid.Row>
 						<Grid.Column width={12}>
@@ -123,18 +122,15 @@ class FundDetails extends Component {
 							{this.renderCards()}
 							</Segment>
 						</Grid.Column>
-
 						<Grid.Column width={4}>
 							<Segment textAlign="center">
 								<AddChildManagerModalForm 
 									address={this.props.address}
 								/>
-
 								<PotentialChildManagersModal 
 									address={this.props.address}
 									potentialChildManagers={this.props.potentialChildManagers}
 								/>
-
 								<InjectTokenModalForm 
 									address={this.props.address}
 								/>
