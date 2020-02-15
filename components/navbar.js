@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Menu, Button } from 'semantic-ui-react';
 import { Link } from '../routes';
+import GetGovEth from './modalForms/getGovEthToken';
 
 
 
@@ -18,12 +19,8 @@ class Navbar extends Component {
 			</Link>
 
 			<Menu.Menu position="right">
-				<Link route="/">
-					<a className="item"></a>
-				</Link>
-				<Link route="/">
-					<a className="item">+</a>
-				</Link>
+				<GetGovEth />
+			
 			</Menu.Menu>
 		</Menu>
 	);

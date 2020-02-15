@@ -3,7 +3,7 @@ import FundFactory from './build/Factory.json';
 
 const instance = new web3.eth.Contract(
 	JSON.parse(FundFactory.interface),
-	"0x2152CD8b7CFEF975fb498cB2eF6aaf97185c45f6"
+	"0x8EbfeC2bEb35576dFD94E62b68380470651A85CE"
 ); 
 
 export default instance;

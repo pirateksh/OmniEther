@@ -107,14 +107,14 @@ contract GovEthToken {
 contract GovEthICOToken{
     address GovEthTokenAddress;
     GovEthToken instance;
-    uint tokens_per_wei = 100;
+    uint tokens_per_wei = 1;
 
     function GovEthICOToken(address gov_eth_token_address) public{
         GovEthTokenAddress = gov_eth_token_address;
         instance = GovEthToken(GovEthTokenAddress);
     }
 
-    function get_GovEth_tokens() public payable{
+    function get_GovEth_tokens() public payable {
         uint Tokens = tokens_per_wei * msg.value;
         require(Tokens <= instance.balanceOf(instance.manager()));
         instance.transferTokensFromManager(msg.sender,Tokens);
