@@ -10,6 +10,9 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "axios": "^0.19.2",
+    "crypto-js": "^4.0.0",
+    "etherscan-api": "^10.0.5",
     "fs-extra": "^8.1.0",
     "ganache-cli": "^6.9.0",
     "mocha": "^7.0.1",
