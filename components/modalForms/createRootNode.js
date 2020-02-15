@@ -27,6 +27,8 @@ class ModalForm extends Component {
 
 			const accounts = await web3.eth.getAccounts();
 
+			console.log("accounts=:", accounts[0]);
+
 			await factory.methods.createRootNode(this.state.description)
 				.send({
 					from: accounts[0],

@@ -76,12 +76,4 @@ class FactoryIndex extends Component {
 
 export default FactoryIndex;
 
-		// <Link route="injectToken">
-		// 						<a>
-		// 							<Button style={{ marginTop: 5}}
-		// 							content="Inject Token"
-		// 							icon="eye"
-		// 							primary
-		// 							/>
-		// 						</a>
-		// 					</Link>
+	
