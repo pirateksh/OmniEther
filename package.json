@@ -1,0 +1,26 @@
+{
+  "name": "hack36",
+  "version": "1.0.0",
+  "description": "Ethereum Project for Hack36",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "node server.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "fs-extra": "^8.1.0",
+    "ganache-cli": "^6.9.0",
+    "mocha": "^7.0.1",
+    "next": "^4.1.4",
+    "next-routes": "^1.4.2",
+    "react": "^16.12.0",
+    "react-dom": "^16.12.0",
+    "semantic-ui-css": "^2.4.1",
+    "semantic-ui-react": "^0.88.2",
+    "solc": "^0.4.17",
+    "truffle-hdwallet-provider": "0.0.3",
+    "web3": "^1.2.0"
+  }
+}
