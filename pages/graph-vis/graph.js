@@ -12,7 +12,9 @@ class graphs extends Component{
         nodes:[],
         edges:[],
         options:{},
-        events:{}
+        events:{},
+        selectedNode:[],
+        selectedEdge:[]
     };
     constructor(props){
         super(props)
@@ -51,9 +53,10 @@ class graphs extends Component{
 		const events = {
             select: function (event) {
                 var { nodes, edges } = event;
-                console.log("Selected nodes:");
+                console.log("Selected nodes$$$:");
+                // this.setState({selectedNode:nodes,selectedEdge:edges})
                 console.log(nodes);
-                console.log("Selected edges:");
+                console.log("Selected edges***:");
                 console.log(edges);
             }
         };
@@ -70,14 +73,9 @@ class graphs extends Component{
             this.setState({nodes:this.props.finalNodes,edges:this.props.finalEdges,options:options,events:events,loading:false})
         }
         
-		
-        
-        
     }
-    
 renderGraph = ()=>{
     console.log('Heloo')
-    
     const graph1={nodes:this.state.nodes,edges:this.state.edges}
     return <Graph graph={graph1} options={this.state.options} events={this.state.events} style={{ height: "640px" }} />
 }
@@ -88,12 +86,12 @@ render(){
     <div>
         <h1>React graph vis</h1>
         {this.renderGraph()}
+        <h3>{this.state.selectedNode}</h3>
     </div>
     // document.getElementById("root")
     )}
     else{
-       return( <div>Loading</div>)
-
+        return( <div>Loading</div>)
     }
 }
 }
