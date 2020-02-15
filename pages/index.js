@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 // import { Card, Button } from 'semantic-ui-react';
-import { Button, Divider, Form, Grid, Segment, Header, Icon, Search } from 'semantic-ui-react'
+import { Button, Divider, Form, Grid, Segment, Header, Icon, Search, Menu } from 'semantic-ui-react'
 import factory from '../ethereum/factory';
 import Layout from '../components/layout';
-import { Link } from '../routes';
+import { Link, Router } from '../routes';
 import Fund from '../ethereum/fund'
 import Graph from "react-graph-vis";
 
@@ -16,7 +16,8 @@ class FundManagerIndex extends Component {
 		events:{},
 		flag:false,
 		node:'',
-		flag1:false
+		flag1:false,
+		loadingButton: false
 	};
 
 	static async getInitialProps(){
@@ -91,13 +92,18 @@ renderGraph = ()=>{
     return <Graph graph={graph1} options={this.state.options} events={this.state.events} style={{ height: "640px" }} />
 }
 
+	onClick = () => {
+		this.setState({ loadingButton: true })
+		Router.pushRoute('/factory/rootFund');
+	}
+
 	render() {
 		
 		return (
 			<Layout>
 				<Segment placeholder raised style={{ marginTop: 50 }}>
 					<Grid columns={2} stackable textAlign='center'>
-						<Divider vertical>Or</Divider>
+						<Divider vertical> => </Divider>
 
 						<Grid.Row verticalAlign='middle'>
 							<Grid.Column>
@@ -106,26 +112,28 @@ renderGraph = ()=>{
 										Factory Functionalities
 				          		</Header>
 								<Link route='/factory/rootFund'>
-									<a><Button primary>Create</Button></a>
+									<a>
+										<Button 
+											primary
+											content='Enter'
+											loading={this.state.loadingButton}
+											onClick={this.onClick}
+										/>
+									</a>
 								</Link>
 							</Grid.Column>
 
 							<Grid.Column>
-								<Header icon>
-									<Icon name='ethereum' />
-									Add New Fund
-				          		</Header>
-								<Link route='/funds'>
-									<Button primary>Create</Button>
-								</Link>
+								<div>{!this.state.loading?this.renderGraph():''}</div>
+								<br />
+								<div>{this.state.flag?this.state.node:''}</div>
+								<div>{this.state.flag1?this.state.nodes:''}</div>
+										
 							</Grid.Column>
 						</Grid.Row>
 					</Grid>
 				</Segment>
-				<div>{!this.state.loading?this.renderGraph():''}</div>
-				<br />
-				<div>{this.state.flag?this.state.node:''}</div>
-				<div>{this.state.flag1?this.state.nodes:''}</div>
+				
 			</Layout>
 		);
 
@@ -135,3 +143,11 @@ renderGraph = ()=>{
 export default FundManagerIndex;
 	
  // <Search placeholder='Search countries...' />
+
+ // <Header icon>
+	// 								<Icon name='ethereum' />
+	// 								Add New Fund
+	// 			          		</Header>
+	// 							<Link route='/funds'>
+	// 								<Button primary>Create</Button>
+	// 							</Link>
