@@ -30,9 +30,7 @@ class RequestRow extends Component {
 				.send({
 					from: accounts[0]
 				});
-
 			Router.pushRoute('getFundRequestsByChild', { contractAddress: this.props.address});
-
 		} catch (err) {
 			this.setState({ errorMessage: err.message });
 		}

@@ -31,6 +31,11 @@ routes
 		name: 'withdrawTokens',
  		pattern: '/funds/:contractAddress/children',
   		page: '/funds/children'
+	})
+	.add({
+		name:'graphVis',
+		pattern:'/graph-vis/graph',
+		page:'/graph-vis/graph'
 	});
 	
 	

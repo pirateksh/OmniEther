@@ -18,6 +18,6 @@ export default props => {
 				</div>
 				<Footer />
 			</div>
-		 </Container>
+		</Container>
 	);
 };
