@@ -128,7 +128,6 @@ renderGraph = ()=>{
 								<br />
 								<div>{this.state.flag?this.state.node:''}</div>
 								<div>{this.state.flag1?this.state.nodes:''}</div>
-										
 							</Grid.Column>
 						</Grid.Row>
 					</Grid>

@@ -11,6 +11,7 @@ class FactoryIndex extends Component {
 
 	static async getInitialProps() {
 		const funds = await factory.methods.getDeployedRoots().call();
+		funds.reverse();
 		return { funds };
 	}
 

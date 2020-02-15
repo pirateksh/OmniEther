@@ -18,7 +18,9 @@ class ChildrenIndex extends Component {
 
 		const fund = Fund(address);
 		const childFunds = await fund.methods.getChildFunds().call();
+		childFunds.reverser();
 		// We have to change this as  here only Root Nodes are being fetched.
+
 
 		return { childFunds, address };
 	}
