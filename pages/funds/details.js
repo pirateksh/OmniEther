@@ -5,7 +5,7 @@ import React, { Component } from 'react';
 import Layout from '../../components/layout';
 import Fund from '../../ethereum/fund';
 import Bidding from '../../ethereum/bidding';
-import { Card, Grid, Button, Modal, Input, Form, Message, Segment } from 'semantic-ui-react';
+import { Card, Grid, Button, Modal, Input, Form, Message, Segment, Sidebar, Menu } from 'semantic-ui-react';
 import web3 from '../../ethereum/web3';
 import AddChildManagerModalForm from '../../components/modalForms/addChildManager';
 import InjectTokenModalForm from '../../components/modalForms/injectToken';
@@ -18,11 +18,14 @@ import BiddingModalForm from '../../components/modalForms/biddingModalForm';
 import AllotedCompany from '../../components/modals/allotedCompanyModal';
 import { Link, Router } from '../../routes';
 import token from '../../ethereum/token';
+import axios from 'axios'
+import bcrypt from 'bcryptjs'
 class FundDetails extends Component {
 
 
 
 	static async getInitialProps(props) {
+		const thisAcc = await web3.eth.getAccounts()
 		const fund = Fund(props.query.contractAddress);
 		const summary = await fund.methods.getSummary().call();
 		const balance = await token.methods.balanceOf(props.query.contractAddress).call();
@@ -35,12 +38,12 @@ class FundDetails extends Component {
 		let canBid = false;
 		let canAddCompanies = false;
 
-		if(tenderAddress.toString() === '0x0000000000000000000000000000000000000000') {
+		if (tenderAddress.toString() === '0x0000000000000000000000000000000000000000') {
 
 		} else {
 			// Tender has already been floated for this instance of Fund.
 
-			if(companyAlloted === '0x0000000000000000000000000000000000000000') {
+			if (companyAlloted === '0x0000000000000000000000000000000000000000') {
 				// If no company has been finalized yet.
 				canFinalizeTender = true;
 				canAddCompanies = true;
@@ -52,11 +55,11 @@ class FundDetails extends Component {
 				canFinalizeTender = false;
 				canBid = false;
 			}
-			
+
 			canFloatTender = false;
 		}
 
-		if(!summary[6]) { // summary[6] is IsLastLevel
+		if (!summary[6]) { // summary[6] is IsLastLevel
 			canFloatTender = false;
 			canFinalizeTender = false;
 			canBid = false;
@@ -64,12 +67,21 @@ class FundDetails extends Component {
 
 		let lowestBid = null;
 
-		if(isTenderFinalized) {
+		if (isTenderFinalized) {
 			bidding = Bidding(tenderAddress);
 			lowestBid = await bidding.methods.lowestBid().call();
 		}
+		let dbaddress, hash, isChannelCreated
+		try {
+			const data = await axios.get('http://54.191.195.43:9999/channel/' + props.query.contractAddress)
 
-		
+			dbaddress = data.data.address
+			hash = data.data.hash
+			isChannelCreated = true
+		} catch (err) {
+			isChannelCreated = false
+		}
+
 
 		console.log(tenderAddress.toString());
 		// console.log(companyAlloted.toString());
@@ -92,8 +104,20 @@ class FundDetails extends Component {
 			canBid: canBid,
 			canAddCompanies: canAddCompanies,
 			isTenderFinalized: isTenderFinalized,
-			lowestBid: lowestBid
+			lowestBid: lowestBid,
+			dbaddress,
+			hash,
+			isChannelCreated,
+			thisAcc: thisAcc[0]
 		};
+	}
+
+	state = {
+		visible: false,
+		loggedIn: false,
+		loading: false,
+		passEntered: '',
+		address: ''
 	}
 
 	// Helper method to render cards
@@ -163,169 +187,293 @@ class FundDetails extends Component {
 			<Card.Group items={items} />
 		);
 	}
+	channelCreationSubmit = async (event) => {
+		event.preventDefault()
+		this.setState({ loading: true })
+		var salt = bcrypt.genSaltSync(10);
+		var hash = bcrypt.hashSync(this.state.passEntered, salt);
+		// 	axios.post('http://54.191.195.43:9999/channel/create/',
+		// 			{name:this.props.address,hash:hash})
+		// 			.then(_=>{this.setState({loading:false})
+		// 			this.props.isChannelCreated=true
+		// })			
+
+
+		// const data = JSON.stringify({
+		// 	name:this.props.address,hash:hash
+		// })
+		// console.log(data)
+		// const options = {
+		//   hostname: '54.191.195.43',
+		//   port: 9999,
+		//   path: '/channel/create',
+		//   method: 'POST',
+		//   headers: {
+		// 	'Content-Type': 'application/json',
+		// 	'Content-Length': data.length
+		//   }
+		// }
+
+		// const req = https.request(options, res => {
+		//   console.log(`statusCode: ${res.statusCode}`)
+
+		//   res.on('data', d => {
+		// 	process.stdout.write(d)
+		//   })
+		// })
+
+		// req.on('error', error => {
+		//   console.error(error)
+		// })
+
+		// req.write(data)
+		// req.end()
+
+		// }
+		const response = await axios.post(
+			'http://54.191.195.43:9999/channel/create',
+			{
+				name: this.props.address, hash: hash
+			},
+			{ headers: { 'Content-Type': 'application/json' } }
+		)
+		console.log(response.data)
+	}
+	loginSubmit = (event) => {
+		event.preventDefault()
+
+		if (bcrypt.compareSync(this.state.passEntered, this.props.hash)) {
+			this.setState({ loggedIn: true })
+		}
+		else
+			console.log('Password doesnt match') //TODO
+
+
+
+	}
+
+	showCreationForm() {
+		console.log(this.props.thisAcc, this.props.manager)
+		if (this.props.thisAcc !== this.props.manager)
+			return <div><h4>{"Channel not created and only manager can create channel"}</h4></div>
+		else
+			return (<div>
+				<h3>{"Create Channel"}</h3>
+				<Form>
+					<Form.Field>
+						<label>Password</label>
+						<input type='password' placeholder='Enter password' onChange={event => this.setState({ passEntered: event.target.value })} />
+					</Form.Field>
+
+					<Button type='submit' onClick={this.channelCreationSubmit} loading={this.state.loading}>Submit</Button>
+				</Form>
+			</div>)
+	}
+
+	showLoginForm() {
+		return (<div>
+			<h3>{"Login to channel"}</h3>
+			<Form>
+				<Form.Field>
+					<label>Password</label>
+					<input type='password' placeholder='Enter password' onChange={event => this.setState({ passEntered: event.target.value })} />
+				</Form.Field>
+
+				<Button type='submit' onClick={this.loginSubmit} loading={this.state.loading}>Submit</Button>
+			</Form>
+		</div>)
+	}
 
 	render() {
 
 		return (
-			<Layout>
-				<Grid>
-					<Grid.Row>
-						<Grid.Column width={10}>
-							<Segment textAlign="center" inverted color="grey">
-								<h3>Fund Details</h3>
-							</Segment>
-						</Grid.Column>
-						<Grid.Column width={6}>
-							<Segment textAlign="center" inverted color="grey">
-								<h3>Actions</h3>
-							</Segment>
-						</Grid.Column>
-					</Grid.Row>
-				</Grid>
-	
-				<Grid>
-					<Grid.Row>
-						<Grid.Column width={10}>
-							<Segment textAlign="center">
-							{this.renderCards()}
-							</Segment>
-						</Grid.Column>
+			<Sidebar.Pushable as={Segment}>
+				<Sidebar
+					as={Menu}
+					animation='overlay'
+					icon='labeled'
+					onHide={() => this.setState({ visible: false })}
+					vertical
+					visible={this.state.visible}
+					width='very wide'>
+					{!this.props.isChannelCreated
+						? this.showCreationForm()
+						: (this.state.loggedIn ? <ChatApp address={this.props.dbaddress} pass={this.state.passEntered} id={this.props.thisAcc} /> : this.showLoginForm())}
+					{/* <ChatApp/> */}
+				</Sidebar>
 
-						<Grid.Column width={6}>
-							<Segment textAlign="center">
+				<Sidebar.Pusher>
+					<Segment basic>
+					<Layout>
+						<Grid>
+							<Grid.Row>
+								<Grid.Column width={10}>
+									<Segment textAlign="center" inverted color="grey">
+										<h3>Fund Details</h3>
+									</Segment>
+								</Grid.Column>
+								<Grid.Column width={6}>
+									<Segment textAlign="center" inverted color="grey">
+										<h3>Actions</h3>
+									</Segment>
+								</Grid.Column>
+							</Grid.Row>
+						</Grid>
 
-								{!this.props.isLastLevel ?
-								(<AddChildManagerModalForm 
-									address={this.props.address}
-								/>) : null
-							}
+						<Grid>
+							<Grid.Row>
+								<Grid.Column width={10}>
+									<Segment textAlign="center">
+										{this.renderCards()}
+									</Segment>
+								</Grid.Column>
 
-								{!this.props.isLastLevel ?
-								(<PotentialChildManagersModal 
-									address={this.props.address}
-									potentialChildManagers={this.props.potentialChildManagers}
-								/>) : null
-								}
+								<Grid.Column width={6}>
+									<Segment textAlign="center">
 
-								{this.props.isTenderFinalized ? (
+										{!this.props.isLastLevel ?
+											(<AddChildManagerModalForm
+												address={this.props.address}
+											/>) : null
+										}
 
-									<AllotedCompany
-										address={this.props.address}
-										lowestBid={this.props.lowestBid}
-										companyAlloted={this.props.companyAlloted}
-									/>
+										{!this.props.isLastLevel ?
+											(<PotentialChildManagersModal
+												address={this.props.address}
+												potentialChildManagers={this.props.potentialChildManagers}
+											/>) : null
+										}
 
-									) :
-									null
-								}
+										{this.props.isTenderFinalized ? (
 
-								{this.props.manager === this.props.parentManager ? (
-								<InjectTokenModalForm 
-									address={this.props.address}
-								/>
-								) :
-								null
-							}
-
-								<Link route='getFundRequestsByChild' params={{ contractAddress: this.props.address }}>
-									<a>
-										<Button 
-											primary
-											icon='eye'
-											style={{ marginTop: 10 }}
-											content={!this.props.isLastLevel ?
-												('View Child Requests') : (
-													'Milestone Completion Requests By Company'
-												)}
-										/>
-									</a>
-								</Link>
-								<Link route='getFundRequestsByManager' params={{ contractAddress: this.props.address }}>
-									<a>
-										<Button 
-											primary
-											icon='eye'
-											style={{ marginTop: 10 }}
-											content={!this.props.isLastLevel ?
-												('View Manager Requests') :
-												('Milestone Assignment by Manager')
-											}
-										/>
-									</a>
-								</Link>
-
-								{!this.props.isLastLevel ? (
-									<Link route='getChildFunds' params={{ contractAddress: this.props.address }}>
-										<a>
-											<Button 
-												primary
-												icon='eye'
-												style={{ marginTop: 10 }}
-												content='View Child Funds'
+											<AllotedCompany
+												address={this.props.address}
+												lowestBid={this.props.lowestBid}
+												companyAlloted={this.props.companyAlloted}
 											/>
-										</a>
-									</Link>
-								) : null }
 
-								{this.props.canFloatTender ? (
-									<FloatTenderModal 
-										address= {this.props.address}
-									/>
-								) : null }
+										) :
+											null
+										}
 
-								{this.props.canFinalizeTender ? (
-									<FinalizeTenderModal 
-										address= {this.props.address}
-										companyAlloted={this.props.companyAlloted}
-									/>
-								) : null }
+										{this.props.manager === this.props.parentManager ? (
+											<InjectTokenModalForm
+												address={this.props.address}
+											/>
+										) :
+											null
+										}
 
-								{this.props.canAddCompanies ? (
-									<AddCompanyTenderModalForm 
-										address={this.props.address}
-									/>
-								) : null}
+										<Link route='getFundRequestsByChild' params={{ contractAddress: this.props.address }}>
+											<a>
+												<Button
+													primary
+													icon='eye'
+													style={{ marginTop: 10 }}
+													content={!this.props.isLastLevel ?
+														('View Child Requests') : (
+															'Milestone Completion Requests By Company'
+														)}
+												/>
+											</a>
+										</Link>
+										<Link route='getFundRequestsByManager' params={{ contractAddress: this.props.address }}>
+											<a>
+												<Button
+													primary
+													icon='eye'
+													style={{ marginTop: 10 }}
+													content={!this.props.isLastLevel ?
+														('View Manager Requests') :
+														('Milestone Assignment by Manager')
+													}
+												/>
+											</a>
+										</Link>
 
-								{this.props.canBid ? (
-									<BiddingModalForm 
-										address={this.props.address}
-									/>
-								) :
-									null
-								}
+										{!this.props.isLastLevel ? (
+											<Link route='getChildFunds' params={{ contractAddress: this.props.address }}>
+												<a>
+													<Button
+														primary
+														icon='eye'
+														style={{ marginTop: 10 }}
+														content='View Child Funds'
+													/>
+												</a>
+											</Link>
+										) : null}
 
-								<WithdrawTokenModalForm 
-									address={this.props.address}
-									balance={this.props.currentBalance}
-								/>	
-							
-							</Segment>
-						</Grid.Column>
+										{this.props.canFloatTender ? (
+											<FloatTenderModal
+												address={this.props.address}
+											/>
+										) : null}
 
-					</Grid.Row>
-				</Grid>
-			</Layout>
-		);
-	}
-}
+										{this.props.canFinalizeTender ? (
+											<FinalizeTenderModal
+												address={this.props.address}
+												companyAlloted={this.props.companyAlloted}
+											/>
+										) : null}
 
-export default FundDetails;
+										{this.props.canAddCompanies ? (
+											<AddCompanyTenderModalForm
+												address={this.props.address}
+											/>
+										) : null}
 
+										{this.props.canBid ? (
+											<BiddingModalForm
+												address={this.props.address}
+											/>
+										) :
+											null
+										}
 
+										<WithdrawTokenModalForm
+											address={this.props.address}
+											balance={this.props.currentBalance}
+										/>
+										<Button
+											primary
+											icon='eye'
+											style={{ marginTop: 10 }}
 
+											content='View chats'
+											onClick={() => { this.setState({ visible: (!this.state.visible) }) }}
+										/>
 
-// (
+									</Segment>
+								</Grid.Column>
 
+							</Grid.Row>
+						</Grid>
+					</Layout>
+					</Segment>
+				</Sidebar.Pusher>
+			</Sidebar.Pushable>
+					);
+				}
+			}
+			
+			export default FundDetails;
+			
+			
+			
+			
+			// (
+			
 // 									{!this.props.bidInstance.toString() ?
-// 									( 
+// 									(
 // 										{!this.props.companyAlloted ? 
 // 											(
-												
+
 
 // 											) : null
 // 										}
 // 									)
-		
+
 // 									: null }
 // 								)
 
