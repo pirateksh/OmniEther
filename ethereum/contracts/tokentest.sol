@@ -147,18 +147,15 @@ contract Factory {
     }
 
     function createChildNode(string description_, address manager, bool is_last_level) public returns (address) {
-        require(isDeployedRoot[msg.sender] == true); // Only already deployed contracts can call this function
         address newFund = new Fund(description_, msg.sender, manager, address(this), is_last_level, GovEthTokenAddress);
-        deployedRoots.push(newFund);
-        isDeployedRoot[newFund] = true;
         return newFund;
     }
    
-    function rootTokenInjection(address rootAddress) public payable {
+    function rootTokenInjection(address rootAddress, uint tokens_) public {
         // This functions injects money to an already deployed Fund Contract
         require(isDeployedRoot[rootAddress]);
         require(msg.sender == Fund(rootAddress).manager());  
-        TokenInstance.transfer(msg.sender, rootAddress,TokenInstance.balanceOf(msg.sender));
+        TokenInstance.transfer(msg.sender, rootAddress, tokens_);
     }
 
     function getDeployedRoots() public view returns (address[]) {
