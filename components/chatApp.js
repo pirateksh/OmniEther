@@ -132,7 +132,7 @@ class ChatApp extends Component {
       
       {this.renderComment()}
         <footer>
-            <Form onSubmit={this.onSubmit}>
+            <Form onSubmit={this.onSubmit} style={{position:'relative',marginTop:'500px'}}>
               <Input
                 value={this.state.msg}
                 onChange={event => this.setState({msg: event.target.value})}
@@ -151,7 +151,7 @@ class ChatApp extends Component {
           
       <body><p>No such Messages</p></body>
         <footer>
-            <Form onSubmit={this.onSubmit} >
+            <Form onSubmit={this.onSubmit} style={{position:'relative',marginTop:'500px'}}>
               <Input
                 value={this.state.msg}
                 onChange={event => this.setState({msg: event.target.value})}

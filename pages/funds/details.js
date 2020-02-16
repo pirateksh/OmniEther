@@ -20,6 +20,7 @@ import { Link, Router } from '../../routes';
 import token from '../../ethereum/token';
 import axios from 'axios'
 import bcrypt from 'bcryptjs'
+import ChatApp from '../../components/chatApp'
 class FundDetails extends Component {
 
 
