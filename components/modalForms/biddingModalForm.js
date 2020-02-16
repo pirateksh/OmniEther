@@ -86,6 +86,7 @@ class ModalForm extends Component {
 							<Form.Field>
 								<label>Bid Amount</label>
 								<Input 
+									
 									value={this.state.bid}
 									onChange={event => this.setState({ bid: event.target.value })}
 									label='GovEth'

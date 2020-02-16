@@ -76,7 +76,7 @@ class RequestRow extends Component {
  				<Cell>{request.requestCreator}</Cell>
  				<Cell>{request.assigned_manager}</Cell>
  				<Cell>{request.description}</Cell>
- 				<Cell>{web3.utils.fromWei(request.value, 'ether')}</Cell>
+ 				<Cell>{request.value}</Cell>
  				<Cell>{request.isLastLevel.toString()}</Cell>
 
  				<Cell>

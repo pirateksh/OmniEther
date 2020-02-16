@@ -141,12 +141,3 @@ renderGraph = ()=>{
 }
 export default FundManagerIndex;
 	
- // <Search placeholder='Search countries...' />
-
- // <Header icon>
-	// 								<Icon name='ethereum' />
-	// 								Add New Fund
-	// 			          		</Header>
-	// 							<Link route='/funds'>
-	// 								<Button primary>Create</Button>
-	// 							</Link>

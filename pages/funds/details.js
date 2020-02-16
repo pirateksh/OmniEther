@@ -1,24 +1,80 @@
 // Shows users detail about particular Fund
 // Here we will have Campaign's address from the URL.
-import Graph from "react-graph-vis";
+
 import React, { Component } from 'react';
 import Layout from '../../components/layout';
 import Fund from '../../ethereum/fund';
+import Bidding from '../../ethereum/bidding';
 import { Card, Grid, Button, Modal, Input, Form, Message, Segment } from 'semantic-ui-react';
 import web3 from '../../ethereum/web3';
 import AddChildManagerModalForm from '../../components/modalForms/addChildManager';
 import InjectTokenModalForm from '../../components/modalForms/injectToken';
 import WithdrawTokenModalForm from '../../components/modalForms/withdrawTokens';
 import PotentialChildManagersModal from '../../components/modals/potentialChildManagerList';
+import FloatTenderModal from '../../components/modals/floatTenderModal';
+import FinalizeTenderModal from '../../components/modals/finalizeTenderModal';
+import AddCompanyTenderModalForm from '../../components/modalForms/addTrustedCompanyToTenderModalForm';
+import BiddingModalForm from '../../components/modalForms/biddingModalForm';
+import AllotedCompany from '../../components/modals/allotedCompanyModal';
 import { Link, Router } from '../../routes';
-
+import token from '../../ethereum/token';
 class FundDetails extends Component {
 
-	
+
+
 	static async getInitialProps(props) {
 		const fund = Fund(props.query.contractAddress);
 		const summary = await fund.methods.getSummary().call();
-		let balance = await web3.eth.getBalance(props.query.contractAddress);
+		const balance = await token.methods.balanceOf(props.query.contractAddress).call();
+		const tenderAddress = await fund.methods.tenderAddress().call();
+		const companyAlloted = await fund.methods.CompanyAlloted().call();
+		const isTenderFinalized = await fund.methods.isTenderFinalized().call();
+
+		let canFloatTender = true;
+		let canFinalizeTender = false;
+		let canBid = false;
+		let canAddCompanies = false;
+
+		if(tenderAddress.toString() === '0x0000000000000000000000000000000000000000') {
+
+		} else {
+			// Tender has already been floated for this instance of Fund.
+
+			if(companyAlloted === '0x0000000000000000000000000000000000000000') {
+				// If no company has been finalized yet.
+				canFinalizeTender = true;
+				canAddCompanies = true;
+				canBid = true;
+
+			} else {
+				// Company has been alloted
+				canAddCompanies = false;
+				canFinalizeTender = false;
+				canBid = false;
+			}
+			
+			canFloatTender = false;
+		}
+
+		if(!summary[6]) { // summary[6] is IsLastLevel
+			canFloatTender = false;
+			canFinalizeTender = false;
+			canBid = false;
+		}
+
+		let lowestBid = null;
+
+		if(isTenderFinalized) {
+			bidding = Bidding(tenderAddress);
+			lowestBid = await bidding.methods.lowestBid().call();
+		}
+
+		
+
+		console.log(tenderAddress.toString());
+		// console.log(companyAlloted.toString());
+
+		// Setting canFloatTender
 		return {
 			address: props.query.contractAddress, // To pass address coming from URL to contributeForm Component.
 			description: summary[0],
@@ -28,12 +84,22 @@ class FundDetails extends Component {
 			childFunds: summary[4],
 			potentialChildManagers: summary[5],
 			isLastLevel: summary[6],
-			currentBalance: balance
+			currentBalance: balance,
+			tenderAddress: tenderAddress,
+			companyAlloted: companyAlloted,
+			canFloatTender: canFloatTender,
+			canFinalizeTender: canFinalizeTender,
+			canBid: canBid,
+			canAddCompanies: canAddCompanies,
+			isTenderFinalized: isTenderFinalized,
+			lowestBid: lowestBid
 		};
 	}
 
 	// Helper method to render cards
 	renderCards() {
+
+
 
 		// Destrcuturing from this.props
 		const {
@@ -73,17 +139,17 @@ class FundDetails extends Component {
 			},
 			{
 				header: childFunds.length.toString(),
-				meta: 'Number of Child Node/Contracts',
+				meta: 'Number of Child Contracts',
 				description: "Number of Contracts to which this Contract has alloted funds."
 			},
 			{
 				header: potentialChildManagers.length.toString(),
-				meta: 'Number of Potential Child Managers',
+				meta: 'Number of Deputy Child Managers',
 				description: "Number of persons who can become manager of child contract."
 			},
 			{
-				header: web3.utils.fromWei(currentBalance, 'ether'),
-				meta: 'Fund Balance (ether)',
+				header: currentBalance,
+				meta: 'Fund Balance (GovEth)',
 				description: 'The balance is how much money Contract has right now'
 			},
 			{
@@ -99,48 +165,78 @@ class FundDetails extends Component {
 	}
 
 	render() {
+
 		return (
 			<Layout>
 				<Grid>
 					<Grid.Row>
-						<Grid.Column width={12}>
+						<Grid.Column width={10}>
 							<Segment textAlign="center" inverted color="grey">
 								<h3>Fund Details</h3>
 							</Segment>
 						</Grid.Column>
-						<Grid.Column width={4}>
+						<Grid.Column width={6}>
 							<Segment textAlign="center" inverted color="grey">
 								<h3>Actions</h3>
 							</Segment>
 						</Grid.Column>
 					</Grid.Row>
 				</Grid>
+	
 				<Grid>
 					<Grid.Row>
-						<Grid.Column width={12}>
+						<Grid.Column width={10}>
 							<Segment textAlign="center">
 							{this.renderCards()}
 							</Segment>
 						</Grid.Column>
-						<Grid.Column width={4}>
+
+						<Grid.Column width={6}>
 							<Segment textAlign="center">
-								<AddChildManagerModalForm 
+
+								{!this.props.isLastLevel ?
+								(<AddChildManagerModalForm 
 									address={this.props.address}
-								/>
-								<PotentialChildManagersModal 
+								/>) : null
+							}
+
+								{!this.props.isLastLevel ?
+								(<PotentialChildManagersModal 
 									address={this.props.address}
 									potentialChildManagers={this.props.potentialChildManagers}
-								/>
+								/>) : null
+								}
+
+								{this.props.isTenderFinalized ? (
+
+									<AllotedCompany
+										address={this.props.address}
+										lowestBid={this.props.lowestBid}
+										companyAlloted={this.props.companyAlloted}
+									/>
+
+									) :
+									null
+								}
+
+								{this.props.manager === this.props.parentManager ? (
 								<InjectTokenModalForm 
 									address={this.props.address}
 								/>
+								) :
+								null
+							}
+
 								<Link route='getFundRequestsByChild' params={{ contractAddress: this.props.address }}>
 									<a>
 										<Button 
 											primary
 											icon='eye'
 											style={{ marginTop: 10 }}
-											content='New Node Requests by DeputyManager'
+											content={!this.props.isLastLevel ?
+												('View Child Requests') : (
+													'Milestone Completion Requests By Company'
+												)}
 										/>
 									</a>
 								</Link>
@@ -150,10 +246,14 @@ class FundDetails extends Component {
 											primary
 											icon='eye'
 											style={{ marginTop: 10 }}
-											content='New Node Requests by Manager'
+											content={!this.props.isLastLevel ?
+												('View Manager Requests') :
+												('Milestone Assignment by Manager')
+											}
 										/>
 									</a>
 								</Link>
+
 								{!this.props.isLastLevel ? (
 									<Link route='getChildFunds' params={{ contractAddress: this.props.address }}>
 										<a>
@@ -161,13 +261,38 @@ class FundDetails extends Component {
 												primary
 												icon='eye'
 												style={{ marginTop: 10 }}
-												content='View Child Node'
+												content='View Child Funds'
 											/>
 										</a>
 									</Link>
 								) : null }
 
+								{this.props.canFloatTender ? (
+									<FloatTenderModal 
+										address= {this.props.address}
+									/>
+								) : null }
 
+								{this.props.canFinalizeTender ? (
+									<FinalizeTenderModal 
+										address= {this.props.address}
+										companyAlloted={this.props.companyAlloted}
+									/>
+								) : null }
+
+								{this.props.canAddCompanies ? (
+									<AddCompanyTenderModalForm 
+										address={this.props.address}
+									/>
+								) : null}
+
+								{this.props.canBid ? (
+									<BiddingModalForm 
+										address={this.props.address}
+									/>
+								) :
+									null
+								}
 
 								<WithdrawTokenModalForm 
 									address={this.props.address}
@@ -187,18 +312,46 @@ class FundDetails extends Component {
 export default FundDetails;
 
 
-// <Link route='withdrawTokens' params={{ contractAddress: this.props.address }}>
-// 									<a>
-// 										<Button 
+
+
+// (
+
+// 									{!this.props.bidInstance.toString() ?
+// 									( 
+// 										{!this.props.companyAlloted ? 
+// 											(
+												
+
+// 											) : null
+// 										}
+// 									)
+		
+// 									: null }
+// 								)
+
+
+
+// {this.props.isLastLevel ? (
+// 									{!!this.props.bidInstance.toString() ? (
+// 										(<Button 
 // 											primary
 // 											icon='eye'
-// 											style={{ marginTop: 5 }}
-// 											content='Withdraw Tokens'
-// 										/>
-// 									</a>
-// 								</Link>
+// 											style={{ marginTop: 10 }}
+// 											content='Finalize Bid'
+// 										/>)
 
+// 									) : }
+// 								) : null}
 
+// 								{this.props.isLastLevel ? (
+// 									(
+// 										{!!this.props.bidInstance.toString() ?
 
-	
-	// 				
+// 									(<Button 
+// 										primary
+// 										icon='eye'
+// 										style={{ marginTop: 10 }}
+// 										content='Bid Here'
+// 									/>) : null }
+// 								)
+// 								) : null}

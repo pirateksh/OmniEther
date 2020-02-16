@@ -54,7 +54,7 @@ class ModalForm extends Component {
 			// console.log("LastLevel:", isLastLevel, " Issuing:", isIssuing);
 
 			await fund.methods.createfundRequestByChild(
-				web3.utils.toWei(value, 'ether'), 
+				value, 
 				description,
 				isLastLevel, 
 				isIssuing
@@ -131,9 +131,9 @@ class ModalForm extends Component {
 							</Form.Field>
 
 							<Form.Field>
-								<label>Value in Ether</label>
+								<label>Value in GovEth</label>
 								<Input 
-									label='ether'
+									label='GovEth'
 									labelPosition='right'
 									value={this.state.value}
 									onChange={event => this.setState({ value: event.target.value })}

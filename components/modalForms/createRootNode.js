@@ -29,10 +29,10 @@ class ModalForm extends Component {
 
 			console.log("accounts=:", accounts[0]);
 
-			await factory.methods.createRootNode(this.state.description)
+			await factory.methods.createRootNode(this.state.description, this.state.value)
 				.send({
 					from: accounts[0],
-					value: web3.utils.toWei(this.state.value, 'ether')
+					// value: web3.utils.toWei(this.state.value, 'ether')
 				})
 
 			this.setState({ 
@@ -77,7 +77,7 @@ class ModalForm extends Component {
 								/>
 								<label style={{ marginTop: 15 }}>Initial amount to Inject</label>
 								<Input 
-									label='ether'
+									label='GovEth'
 									labelPosition="right" 
 									value={this.state.value}
 									onChange={event => this.setState({ value: event.target.value, success: false })}
