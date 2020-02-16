@@ -39,6 +39,7 @@ class ChatApp extends Component {
     .then(data=>{this.setState({name:data.data.name})
                 console.log(data.data.name)
 })
+    .catch(this.setState({name:'Anonymous'}))
     .catch(err=>console.log(err))
     console.log('orbit instantiated'+Obj)
     console.log('&&&')

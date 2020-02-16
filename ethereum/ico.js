@@ -6,6 +6,6 @@ import GovEthICOToken from './build/GovEthICOToken.json';
 
 	const instance =  new web3.eth.Contract(
 		JSON.parse(GovEthICOToken.interface),
-		"0x94442e430a63856FB2202b3866eeDff4B1FFb094"
+		"0x6De3Bd96d0C790BcD3827FAde4C50d131b040C72"
 	);
 export default instance;

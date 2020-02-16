@@ -263,7 +263,7 @@ class FundDetails extends Component {
 				<Form>
 					<Form.Field>
 						<label>Password</label>
-						<input type='password' placeholder='Enter password' onChange={event => this.setState({ passEntered: event.target.value })} />
+						<input type='password' placeholder='Set password' onChange={event => this.setState({ passEntered: event.target.value })} />
 					</Form.Field>
 
 					<Button type='submit' onClick={this.channelCreationSubmit} loading={this.state.loading}>Submit</Button>
