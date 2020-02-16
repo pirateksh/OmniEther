@@ -332,18 +332,16 @@ class FundDetails extends Component {
 								<Grid.Column width={6}>
 									<Segment textAlign="center">
 
-										{!this.props.isLastLevel ?
-											(<AddChildManagerModalForm
-												address={this.props.address}
-											/>) : null
-										}
+										
+												<AddChildManagerModalForm
+												address={this.props.address}/>
+											
 
-										{!this.props.isLastLevel ?
-											(<PotentialChildManagersModal
+									
+											<PotentialChildManagersModal
 												address={this.props.address}
-												potentialChildManagers={this.props.potentialChildManagers}
-											/>) : null
-										}
+												potentialChildManagers={this.props.potentialChildManagers}/>
+									
 
 										{this.props.isTenderFinalized ? (
 

@@ -22,7 +22,7 @@ class Orbit {
     startingIPFS = async () => {
         window.ipfs = new IPFS({
             // preload: { enabled: true , addresses: ['/dns4/node1.preload.ipfs.io/https'] },
-            repo: './orbitdb/examples/ipfs2',
+            repo: './orbitdb/examples/ipfs',
             start: true,
             EXPERIMENTAL: {
 

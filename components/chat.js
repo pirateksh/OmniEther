@@ -55,7 +55,7 @@ export default class chat extends Component {
                 <Grid>
                     <Grid.Column floated={this.checkUser()?'right':'left'} width={15}>
                         <Comment.Group >
-                            <Comment key={this.props.latest.time + this.props.latest.date + this.props.latest.userId + this.props.latest.msg} style={{float:'left',backgroundColor:'white'}}>
+                            <Comment key={this.props.latest.time + this.props.latest.date + this.props.userId + this.props.latest.msg} style={{float:'left',backgroundColor:'white'}}>
                                 <Comment.Avatar src='https://react.semantic-ui.com/images/avatar/small/elliot.jpg' />
                                 <Comment.Content>
                                     {/* <Comment.Author>{this.props.latest.replyOfUserId.}</Comment.Author> */}
