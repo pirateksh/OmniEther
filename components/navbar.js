@@ -1,26 +1,32 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { Menu, Button } from 'semantic-ui-react';
 import { Link } from '../routes';
+import GetGovEth from './modalForms/getGovEthToken';
 
-export default () => {
-	return (
+
+
+class Navbar extends Component {
+
+
+	render() {
+
+		return (
 		<Menu style={{ marginTop: '10px' }}>
 			<Link route="/">
 				<a className="item">
-		
-						FundManager
-				
+						<h3>OmniEther</h3>	
 				</a>
 			</Link>
 
 			<Menu.Menu position="right">
-				<Link route="/">
-					<a className="item">Funds</a>
-				</Link>
-				<Link route="/">
-					<a className="item">+</a>
-				</Link>
+				<GetGovEth />
+			
 			</Menu.Menu>
 		</Menu>
 	);
-};
+
+	}
+}
+
+
+export default Navbar;

@@ -60,7 +60,6 @@ class RequestIndex extends Component {
 							<HeaderCell>Requester</HeaderCell>
 							<HeaderCell>Description</HeaderCell>
 							<HeaderCell>Amount</HeaderCell>
-							<HeaderCell>Re-Issue Request</HeaderCell>
 							<HeaderCell>Last Level</HeaderCell>
 							<HeaderCell>Approval <br/> (Parent Manager)</HeaderCell>
 							<HeaderCell>Approval <br/> (Current Manager)</HeaderCell>

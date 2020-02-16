@@ -5,7 +5,7 @@ const fs = require('fs-extra');
 
 const buildPath = path.resolve(__dirname, 'build');
 fs.removeSync(buildPath); // Removes the folder and everything inside it.
-const fundManagerPath = path.resolve(__dirname, 'contracts', 'FundManager.sol');
+const fundManagerPath = path.resolve(__dirname, 'contracts', 'tokentest.sol');
 const source = fs.readFileSync(fundManagerPath, 'utf8');
 const output = solc.compile(source, 1).contracts;
 fs.ensureDirSync(buildPath); // ensureDir checks if the directory exists.

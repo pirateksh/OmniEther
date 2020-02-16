@@ -40,7 +40,7 @@ class ModalForm extends Component {
 		return (
 
 			<Modal 
-				onClose={this.closeModal}
+				onClose={this.close0x21A48bAa73B55CC7bbD4aD918530Dc8A1eE32A1fModal}
 				open={this.state.showModal}
 				trigger={
 					<Button 

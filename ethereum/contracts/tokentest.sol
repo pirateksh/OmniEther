@@ -6,7 +6,7 @@ library SafeMath {
         assert(b <= a);
         return a - b;
     }
-    
+   
     function add(uint256 a, uint256 b) internal pure returns (uint256)   {
         uint256 c = a + b;
         assert(c >= a);
@@ -43,12 +43,12 @@ contract GovEthToken {
     // This mapping contains the address of the TokenOwner as key and TokenBalance as value.
     mapping(address => uint256) balances;
 
-    // This mapping contains address of the approver as key and mapping of the approved delegate address to TokenValue approve as value. 
+    // This mapping contains address of the approver as key and mapping of the approved delegate address to TokenValue approve as value.
     // mapping(address => mapping (address => uint256)) allowed;
 
     function GovEthToken(uint256 totalTokens) public {
         balances[msg.sender] = totalTokens;              
-        totalTokenSupply = totalTokens;                       
+        totalTokenSupply = totalTokens;                      
         name = "GovEth";                              
         decimals = 0;                              
         symbol = "GE";
@@ -61,12 +61,12 @@ contract GovEthToken {
 
     // This Function transfer numTokens to the receiver from the balance of msg.sender
     // It does so by firing the Transfer Event
-    function transfer(address receiver,uint numTokens) public returns (bool) {
-        require(balances[msg.sender] != 0);
-        require(numTokens <= balances[msg.sender]);
-        balances[msg.sender] = balances[msg.sender].sub(numTokens);
+    function transfer(address owner ,address receiver,uint numTokens) public returns (bool) {
+        require(balances[owner] != 0);
+        require(numTokens <= balances[owner]);
+        balances[owner] = balances[owner].sub(numTokens);
         balances[receiver] = balances[receiver].add(numTokens);
-        Transfer(msg.sender, receiver, numTokens); // firing ERC20 event -> Transfer
+        Transfer(owner, receiver, numTokens); // firing ERC20 event -> Transfer
         return true;
     }
 
@@ -79,7 +79,7 @@ contract GovEthToken {
         return true;
     }
 
-    // This function will give approval of msg.sender to the delegate address to spend numTokens 
+    // This function will give approval of msg.sender to the delegate address to spend numTokens
     // It does so by firing the Approval Event
     // function approve(address delegate,uint numTokens) public returns (bool) {
     //     allowed[msg.sender][delegate] = numTokens;
@@ -107,14 +107,14 @@ contract GovEthToken {
 contract GovEthICOToken{
     address GovEthTokenAddress;
     GovEthToken instance;
-    uint tokens_per_wei = 100;
+    uint tokens_per_wei = 1;
 
     function GovEthICOToken(address gov_eth_token_address) public{
         GovEthTokenAddress = gov_eth_token_address;
         instance = GovEthToken(GovEthTokenAddress);
     }
 
-    function get_GovEth_tokens() public payable{
+    function get_GovEth_tokens() public payable {
         uint Tokens = tokens_per_wei * msg.value;
         require(Tokens <= instance.balanceOf(instance.manager()));
         instance.transferTokensFromManager(msg.sender,Tokens);
@@ -123,42 +123,39 @@ contract GovEthICOToken{
 }
 
 contract Factory {
-    
+   
     address[] public deployedRoots;
     mapping(address => bool) public isDeployedRoot;
     address temp;
     address public GovEthTokenAddress;
     GovEthToken TokenInstance;
-    
+   
     function Factory(address tokenAddress) public{
         GovEthTokenAddress = tokenAddress;
-        TokenInstance = GovEthToken(GovEthTokenAddress); 
+        TokenInstance = GovEthToken(GovEthTokenAddress);
     }
 
 
-    function createRootNode(string description_) public payable {
+    function createRootNode(string description_, uint tokens) public {
         address newFund = new Fund(description_, temp, msg.sender, address(this), false, GovEthTokenAddress);
 
-        TokenInstance.transfer(msg.sender,TokenInstance.balanceOf(msg.sender));
+        TokenInstance.transfer(msg.sender, newFund, tokens);
         // newFund.transfer(msg.value);
 
         isDeployedRoot[newFund] = true;
-        deployedRoots.push(newFund); 
+        deployedRoots.push(newFund);
     }
 
-    function createChildNode(string description_, address manager, bool is_last_level) public payable returns (address) {
-        // require(isDeployedContract[msg.sender] == true); // Only already deployed contracts can call this function
+    function createChildNode(string description_, address manager, bool is_last_level) public returns (address) {
         address newFund = new Fund(description_, msg.sender, manager, address(this), is_last_level, GovEthTokenAddress);
-        // deployedContracts.push(newFund);
-        // isDeployedContract[newFund] = true;
         return newFund;
     }
-    
-    function rootTokenInjection(address rootAddress) public payable {
+   
+    function rootTokenInjection(address rootAddress, uint tokens_) public {
         // This functions injects money to an already deployed Fund Contract
         require(isDeployedRoot[rootAddress]);
-        require(msg.sender == Fund(rootAddress).manager());   
-        TokenInstance.transfer(rootAddress,TokenInstance.balanceOf(msg.sender));
+        require(msg.sender == Fund(rootAddress).manager());  
+        TokenInstance.transfer(msg.sender, rootAddress, tokens_);
     }
 
     function getDeployedRoots() public view returns (address[]) {
@@ -172,8 +169,6 @@ contract Fund {
     function() public payable { } // fallback Function to handle ether transaction inbetween Contracts.
     address public GovEthTokenAddress;
     GovEthToken TokenInstance;
-    address public CompanyAlloted;
-
 
     struct fundRequestByChild {
         // This request can be created by potentialChildManagers
@@ -187,13 +182,10 @@ contract Fund {
         bool approvedByParentManager;
         bool isLastLevel;
         bool isPublicInvolved;
-        bool isReIssuing; // if Child again Asks for funds from parent.
-        address selfAddress; // If Child asks for funds from parents, this will provide address of child contract
-        // otherwise it is of no use (as of now)
         mapping(address => bool) publicResponded;
         uint positivePublicResponseCount;
     }
-    
+   
     struct fundRequestByManager {
         // Created by manager if this Contract
         // approved by parentManager
@@ -205,10 +197,10 @@ contract Fund {
         bool approvedByParentManager;
         bool isLastLevel;
     }
-    
+   
     string public briefDescription;
     bool public isLastLevel;
-    bool public isCompanyChosen;
+    bool public isTenderFinalized;
     address public parent;
 
     // ParentFund reference can also be stored like
@@ -216,7 +208,7 @@ contract Fund {
     address public manager;
     address public parentManager;
     Factory public factory;
-   
+    address public CompanyAlloted;
     address[] public childFunds;
     address[] public potentialChildManagers;
    
@@ -230,16 +222,18 @@ contract Fund {
         require(msg.sender == manager);
         _;
     }
+
     modifier restrictedCompanyAllotment() {
         require(CompanyAlloted != 0);
         _;
     }
    
-     function Fund(string description_, address newParent, address managerAddress, address factoryAddress, bool is_last_level, address tokenAddress) public {
+    function Fund(string description_, address newParent, address managerAddress, address factoryAddress, bool is_last_level, address tokenAddress) public {
         isLastLevel = is_last_level;
+        isTenderFinalized = false;
         GovEthTokenAddress = tokenAddress;
         TokenInstance = GovEthToken(GovEthTokenAddress);
-        briefDescription = description_; 
+        briefDescription = description_;
         manager = managerAddress;
         factory = Factory(factoryAddress);
 
@@ -251,16 +245,11 @@ contract Fund {
             parent = newParent;
             parentManager = Fund(parent).manager();
         }
-
-        // if(isLastLevel){
-
-        // }
-
     }
    
-    function createfundRequestByChild(uint value, string description, bool is_last_level, bool is_public_involved,bool is_reissuing) public {
+    function createfundRequestByChild(uint value, string description, bool is_last_level, bool is_public_involved) public {
         require(isPotentialChildManager[msg.sender]);    
-        require(value <= address(this).balance);
+        require(value <= TokenInstance.balanceOf(address(this)));
         fundRequestByChild memory newRequest = fundRequestByChild({
             requestCreator: msg.sender,
             description: description,
@@ -271,9 +260,7 @@ contract Fund {
             isLastLevel: is_last_level,
             isPublicInvolved: is_public_involved,
             // No updates for publicResponded as of now.
-            positivePublicResponseCount: 0,
-            isReIssuing: is_reissuing,
-            selfAddress: address(this)
+            positivePublicResponseCount: 0
         });
         fundRequestsByChild.push(newRequest);
 
@@ -281,7 +268,7 @@ contract Fund {
    
     function createfundRequestByManager(address assigned_manager ,string description,uint value, bool is_last_level) public restricted{
         require(isPotentialChildManager[assigned_manager]==true);
-        require(value <= address(this).balance);
+        require(value <= TokenInstance.balanceOf(address(this)) );
         fundRequestByManager memory newfundRequestByManager = fundRequestByManager({
             requestCreator: msg.sender,
             assigned_manager: assigned_manager,
@@ -291,9 +278,9 @@ contract Fund {
             approvedByParentManager: false,
             isLastLevel: is_last_level
         });
-        
+       
         fundIssuingsByManager.push(newfundRequestByManager);
-        
+       
     }
    
     /*
@@ -308,7 +295,7 @@ contract Fund {
     function approvefundRequestByChild(uint index) public {
         require(msg.sender == parentManager || msg.sender == manager);
         fundRequestByChild storage request = fundRequestsByChild[index];
-        
+       
         if(msg.sender == parentManager) {
             require(!request.approvedByParentManager);
             request.approvedByParentManager = true;
@@ -318,7 +305,7 @@ contract Fund {
             request.approvedByCurrentManager = true;
         }
     }
-    
+   
     function approvefundRequestByManager(uint index) public{
         // CHECK THIS FUNCTION
         require(msg.sender == parentManager);
@@ -335,15 +322,12 @@ contract Fund {
         require(request.approvedByParentManager);
         if(isLastLevel){
             request.complete = true;
-            if(request.isReIssuing){
-                TokenInstance.transfer(request.selfAddress,request.value);
-            }
-            else if(request.isPublicInvolved){
+            if(request.isPublicInvolved){
                 require( percent(request.positivePublicResponseCount, public_volunteers_list.length, 2) >= 70 );
-                InitializingMilestone(request.value);
+                InitializingMilestone(request.value, request.requestCreator);
             }
             else{
-                InitializingMilestone(request.value);
+                InitializingMilestone(request.value, request.requestCreator);
                 // initializedMilestones[request.description] = true;
             }
         }
@@ -359,19 +343,19 @@ contract Fund {
         require(request.approvedByParentManager);
         if(isLastLevel){
             request.complete = true;
-            InitializingMilestone(request.value);
+            InitializingMilestone(request.value, request.assigned_manager);
         }
         else{
             createChild(request.description, request.value, request.assigned_manager, request.isLastLevel);
             request.complete = true;
         }
     }
-    
-    function InitializingMilestone( uint amount) public restricted restrictedCompanyAllotment{
-        require(isPotentialChildManager[CompanyAlloted]);
+   
+    function InitializingMilestone( uint amount, address company) public restricted restrictedCompanyAllotment{
+        require(CompanyAlloted == company);
         require(isLastLevel);
-        require(amount <= address(this).balance);
-        TokenInstance.transfer( CompanyAlloted,amount);
+        require(amount <= TokenInstance.balanceOf(address(this)) );
+        TokenInstance.transfer(address(this), CompanyAlloted, amount);
     }
    
     // function getCurrentBalance() public view returns(uint) {
@@ -384,14 +368,16 @@ contract Fund {
     //     return potentialChildManagers;
     // }
    
-    function addPotentialChildManager(address childManager) public restricted restrictedCompanyAllotment {
+    function addPotentialChildManager(address childManager) public restricted{
         require(isPotentialChildManager[childManager]==false);
         if(isLastLevel){
+            // require(childManager != 0);
             require(childManager == CompanyAlloted);
             potentialChildManagers.push(childManager);
             isPotentialChildManager[childManager] = true;
         }
         else{
+            // require(childManager != 0);
             potentialChildManagers.push(childManager);
             isPotentialChildManager[childManager] = true;
         }
@@ -399,18 +385,18 @@ contract Fund {
    
     function createChild(string description_,uint amount, address childManagerAddress, bool is_last_level) private restricted {
         // Private because this is not called directly by user or other contracts
-        require(amount <= address(this).balance);
+        require(amount <= TokenInstance.balanceOf(address(this)) );
         require(isPotentialChildManager[childManagerAddress]);
         address child = factory.createChildNode(description_, childManagerAddress, is_last_level);
         childFunds.push(child);
-        TokenInstance.transfer(child,amount);
+        TokenInstance.transfer(address(this), child, amount);
     }
 
     function withdrawFunds() public {
         // Function to withdraw funds. This can be called
         // only by parentManager
         require(msg.sender == parentManager);
-        TokenInstance.transfer(parent, address(this).balance);
+        TokenInstance.transfer(address(this), parent, TokenInstance.balanceOf(address(this)));
     }
    
     function getChildFunds() public view returns(address[]) {
@@ -449,18 +435,16 @@ contract Fund {
     function getPotentialChildManagers() public view returns(address[]) {
         return potentialChildManagers;
     }
-    
+   
     function getFundRequestByChildsCount() public view returns (uint) {
-        return fundRequestsByChild.length;   
+        return fundRequestsByChild.length;  
     }
-    
+   
     function getFundRequestByManagersCount() public view returns (uint) {
         return fundIssuingsByManager.length;
     }
 
-    function getSummary() public view returns (
-        string, address, address, address, address[], address[], bool
-        ) {
+    function getSummary() public view returns (string, address, address, address, address[], address[], bool) {
         // A function which returns summary about this Fund instance
         return (
             briefDescription,
@@ -473,68 +457,87 @@ contract Fund {
         );
     }
 
-    Bidding TheBid;
-    function PublishBidInstance() public restricted{
+    address public tenderAddress;
+    function FloatTender() public restricted{
+        //CHECKED
+        require(!isTenderFinalized);
         require(isLastLevel);
-        require(address(TheBid) == 0 );
-        TheBid = new Bidding(msg.sender);
+        require(tenderAddress == 0);
+        tenderAddress = new Bidding(msg.sender);
     }
 
-    function AssignCompany() public restricted{
-      require(isLastLevel);
+    function FinalizeTender() public restricted{
+        // CHECKED
+        require(!isTenderFinalized);
+        require(isLastLevel);
         require(CompanyAlloted == 0);
-        require(address(TheBid) !=0 );
-        CompanyAlloted  = TheBid.chooseCompany();
+        require(tenderAddress !=0 );
+        Bidding(tenderAddress).chooseLowestBidder(msg.sender);
+        CompanyAlloted =  Bidding(tenderAddress).finalCompany();
+        isTenderFinalized = true;
     }
- 
+
 }
 
 contract Bidding{
    
-    address manager;
-    uint finalBid;
-    address finalCompany;
+    address public manager;
+    uint public lowestBid;
+    address public finalCompany;
+    bool public tenderAlloted;
    
-    function Bidding(address current_manager) public{
+    function Bidding(address current_manager) public {
+        tenderAlloted = false;
         manager = current_manager;
     }
    
     address[] public eligibleCompaniesList;
-    mapping(address => bool) public eligibleCompanies;
+    mapping(address => bool) public isEligibleCompany;
    
     mapping(address => uint) public bids;
-    address[] public bidsList; // THis is bidder list
+    address[] public biddersList;
    
-    modifier restrictedManagerAccess(){
-        require(msg.sender == manager);    
-        _;
-    }
    
-    function addEligibleCompany(address company) public restrictedManagerAccess{
-        require(!eligibleCompanies[company]);
+    function addEligibleCompany(address company) public {
+        // CHECKED
+        require(!tenderAlloted);
+        require(msg.sender == manager);
+        require(!isEligibleCompany[company]);
         eligibleCompaniesList.push(company);
-        eligibleCompanies[company] = true;
+        isEligibleCompany[company] = true;
     }
    
-    function bid(uint amount) public {
-        require(eligibleCompanies[msg.sender]);
+    function bid(uint amount) public{
+        // CHECKED
+        require(!tenderAlloted);
+        require(isEligibleCompany[msg.sender]);
         require(bids[msg.sender] == 0);
         bids[msg.sender] = amount;
-        bidsList.push(msg.sender);
-        if(bidsList.length == 1){
-            finalBid = amount;
+        biddersList.push(msg.sender);
+        if(biddersList.length == 1){
+            lowestBid = amount;
             finalCompany = msg.sender;
         }
-        else{
-            if(amount < finalBid){
-                finalBid = amount;
+        else {
+           
+            if(amount < lowestBid){
+                lowestBid = amount;
                 finalCompany = msg.sender;
             }
+           
         }
     }
    
-    function chooseCompany() public view restrictedManagerAccess returns (address){
-        return finalCompany;
+    function chooseLowestBidder(address manager_) public {
+        // CHECKED
+        require(!tenderAlloted);
+        require(manager_ == manager);
+        require(biddersList.length >= 1);
+        tenderAlloted = true;
+    }
+
+    function getEligibleCompanyList() public view returns(address[]) {
+        return eligibleCompaniesList;
     }
    
 }

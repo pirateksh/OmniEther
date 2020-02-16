@@ -11,18 +11,29 @@ class FactoryIndex extends Component {
 
 	static async getInitialProps() {
 		const funds = await factory.methods.getDeployedRoots().call();
-		return { funds };
+		funds.reverse();
+
+		var briefs = [];
+		for (var i = 0; i < funds.length; i++) {
+			var inst = Fund(funds[i]);
+			briefs[i] = await inst.methods.briefDescription().call();	
+		}
+
+		return { funds, briefs };
 	}
 
 	renderFunds() {
-		const items = this.props.funds.map(address => {
+		const items = this.props.funds.map((address, index) => {
 			// For each Campaign, does the following.
 			return {
 				header: address,
 				description: (
+					<div>
+					{this.props.briefs[index]} <br/>
 					<Link route='fundDetails' params={{ contractAddress: address }}>
 						<a>View Fund</a>
 					</Link>
+					</div>
 				),
 				fluid: true
 			};
@@ -76,12 +87,4 @@ class FactoryIndex extends Component {
 
 export default FactoryIndex;
 
-		// <Link route="injectToken">
-		// 						<a>
-		// 							<Button style={{ marginTop: 5}}
-		// 							content="Inject Token"
-		// 							icon="eye"
-		// 							primary
-		// 							/>
-		// 						</a>
-		// 					</Link>
+	

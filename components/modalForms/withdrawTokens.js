@@ -75,7 +75,7 @@ class ModalForm extends Component {
 			      		<Message 
 			      			info
 			      			header="Current Balance"
-			      			content={`This fund currently contains ${web3.utils.fromWei(this.props.balance, 'ether')} ether.`}
+			      			content={`This fund currently contains ${this.props.balance} GovEth.`}
 			      		/>
 
 			      		<Message 
@@ -93,7 +93,7 @@ class ModalForm extends Component {
 						      	loading={this.state.loading}
 						      	icon='backward'
 						      	size='huge'
-						      	label={{ basic: true, color: 'red', pointing: 'left', content: `${web3.utils.fromWei(this.props.balance, 'ether')}`  }}
+						      	label={{ basic: true, color: 'red', pointing: 'left', content: `${this.props.balance}`  }}
 						    />
 						</Form>
 

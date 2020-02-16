@@ -52,7 +52,7 @@ class ModalForm extends Component {
 			await fund.methods.createfundRequestByManager(
 				assignedManager,
 				description,
-				web3.utils.toWei(value, 'ether'),
+				value,
 				isLastLevel
 				).send({ 
 					from: accounts[0]
@@ -130,9 +130,9 @@ class ModalForm extends Component {
 							</Form.Field>
 
 							<Form.Field>
-								<label>Value in Ether</label>
+								<label>Value in GovEth</label>
 								<Input 
-									label='ether'
+									label='GovEth'
 									labelPosition='right'
 									value={this.state.value}
 									onChange={event => this.setState({ value: event.target.value })}

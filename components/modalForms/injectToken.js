@@ -30,10 +30,10 @@ class ModalForm extends Component {
 
 			const accounts = await web3.eth.getAccounts();
 
-			await factory.methods.rootTokenInjection(this.props.address)
+			await factory.methods.rootTokenInjection(this.props.address, this.state.value)
 				.send({
 					from: accounts[0],
-					value: web3.utils.toWei(this.state.value, 'ether')
+					// value: web3.utils.toWei(this.state.value, 'ether')
 				})
 
 			this.setState({ 
@@ -77,7 +77,7 @@ class ModalForm extends Component {
 							<Form.Field>
 								<label style={{ marginTop: 15 }}>Amount to Inject</label>
 								<Input 
-									label='ether'
+									label='GovEth'
 									labelPosition="right" 
 									value={this.state.value}
 									onChange={event => this.setState({ value: event.target.value, success: false })}

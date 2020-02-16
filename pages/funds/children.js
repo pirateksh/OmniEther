@@ -18,9 +18,17 @@ class ChildrenIndex extends Component {
 
 		const fund = Fund(address);
 		const childFunds = await fund.methods.getChildFunds().call();
+		childFunds.reverse();
+
+		var briefs = [];
+		for (var i = 0; i < childFunds.length; i++) {
+			var inst = Fund(childFunds[i]);
+			briefs[i] = await inst.methods.briefDescription().call();	
+		}
 		// We have to change this as  here only Root Nodes are being fetched.
 
-		return { childFunds, address };
+
+		return { childFunds, address, briefs };
 	}
 
 	/*onSubmit() {
@@ -29,14 +37,17 @@ class ChildrenIndex extends Component {
 	}*/
 
 	renderFunds() {
-		const items = this.props.childFunds.map(address => {
+		const items = this.props.childFunds.map((address,index) => {
 			// For each Campaign, does the following.
 			return {
 				header: address,
 				description: (
+					<div>
+					{this.props.briefs[index]} <br/>
 					<Link route='fundDetails' params={{ contractAddress: address }}>
 						<a>View Fund</a>
 					</Link>
+					</div>
 				),
 				fluid: true
 			};
