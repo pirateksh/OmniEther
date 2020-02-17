@@ -15,7 +15,7 @@ An Ethereum and IPFS based project to ensure transparency and security in Asset 
  * Between any parent-child instance of smart contract only manager of either instance is able to request asset transfer between them.
  * Every time before deploying an instance of smart contract we are asking whether this node is leaf node or lowest level instance of smart contract. So that only this kind of instance is capable to transfer assets to private account to check fraudulence.
  * Each instance of smart contract has a dedicated __chat channel__ setup by manager of that instance which can accessed by persons authorized by the manager.
- * Chats are encrypted, thus and cannot be accessed by unauthorized individual.
+ * Chats are encrypted using __AES 256 encryption__, thus and cannot be accessed by unauthorized individual.
  * OrbitDB and IPFS technology is used to store and serve chats.
  * APIs were created using __express.js__ to fetch chats from OrbitDB.
  * We have used custom __ERC20 token__ (named __GovEth__) and initiated an __ICO (Inital Coin Offering)__ to counter high fluctuation in Ether's monetary value.
