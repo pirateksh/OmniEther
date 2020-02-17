@@ -263,7 +263,7 @@ class FundDetails extends Component {
 				<Form>
 					<Form.Field>
 						<label>Password</label>
-						<input type='password' placeholder='Enter password' onChange={event => this.setState({ passEntered: event.target.value })} />
+						<input type='password' placeholder='Set password' onChange={event => this.setState({ passEntered: event.target.value })} />
 					</Form.Field>
 
 					<Button type='submit' onClick={this.channelCreationSubmit} loading={this.state.loading}>Submit</Button>
@@ -332,18 +332,16 @@ class FundDetails extends Component {
 								<Grid.Column width={6}>
 									<Segment textAlign="center">
 
-										{!this.props.isLastLevel ?
-											(<AddChildManagerModalForm
-												address={this.props.address}
-											/>) : null
-										}
+										
+												<AddChildManagerModalForm
+												address={this.props.address}/>
+											
 
-										{!this.props.isLastLevel ?
-											(<PotentialChildManagersModal
+									
+											<PotentialChildManagersModal
 												address={this.props.address}
-												potentialChildManagers={this.props.potentialChildManagers}
-											/>) : null
-										}
+												potentialChildManagers={this.props.potentialChildManagers}/>
+									
 
 										{this.props.isTenderFinalized ? (
 

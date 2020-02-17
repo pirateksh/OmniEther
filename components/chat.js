@@ -34,8 +34,8 @@ export default class chat extends Component {
         var date = today.getDate() + '/' + today.getMonth() + '/' + today.getFullYear();
         var time = today.getHours() + ':' + today.getMinutes() + ':' + today.getSeconds();
         var ciphertext = CryptoJS.AES.encrypt(this.state.msg, this.props.pass).toString();
-        var ciphertext1 = CryptoJS.AES.encrypt(this.props.msg, this.props.pass).toString();
-        const entry = { reply: true, replyOfUserId: this.props.latest.userId, replyOfMsg: ciphertext1, replyOfMsgDate: this.props.latest.date, replyOfMsgTime: this.props.latest.time, userId: this.props.userId, msg: ciphertext, date: date, time: time }
+        // var ciphertext1 = CryptoJS.AES.encrypt(this.props.msg, this.props.pass).toString();
+        const entry = { reply: true, replyOfUserId: this.props.latest.userId, replyOfMsg: this.props.latest.msg, replyOfMsgDate: this.props.latest.date, replyOfMsgTime: this.props.latest.time, userId: this.props.userId, msg: ciphertext, date: date, time: time }
         
         
         wk.addingToDB(entry).then((result) => {
@@ -55,7 +55,7 @@ export default class chat extends Component {
                 <Grid>
                     <Grid.Column floated={this.checkUser()?'right':'left'} width={15}>
                         <Comment.Group >
-                            <Comment key={this.props.latest.time + this.props.latest.date + this.props.latest.userId + this.props.latest.msg} style={{float:'left',backgroundColor:'white'}}>
+                            <Comment key={this.props.latest.time + this.props.latest.date + this.props.userId + this.props.latest.msg} style={{float:'left',backgroundColor:'white'}}>
                                 <Comment.Avatar src='https://react.semantic-ui.com/images/avatar/small/elliot.jpg' />
                                 <Comment.Content>
                                     {/* <Comment.Author>{this.props.latest.replyOfUserId.}</Comment.Author> */}

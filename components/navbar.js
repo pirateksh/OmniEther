@@ -3,8 +3,7 @@ import { Menu, Button } from 'semantic-ui-react';
 import { Link } from '../routes';
 import GetGovEth from './modalForms/getGovEthToken';
 
-
-
+import RegisterForm from './modals/register';
 class Navbar extends Component {
 
 
@@ -20,7 +19,7 @@ class Navbar extends Component {
 
 			<Menu.Menu position="right">
 				<GetGovEth />
-			
+				<RegisterForm />
 			</Menu.Menu>
 		</Menu>
 	);

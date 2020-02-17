@@ -9,13 +9,24 @@ import axios from 'axios'
 
 let Obj,db;
 class ChatApp extends Component {
-
+//  static async getInitialProps(props){
+//      let name
+//      try{
+//          const data=axios.get('http://54.191.195.43:9999/users/'+props.id)
+//          name=data.data.name
+//          console.log(name)
+//      }catch(err){
+//          name='Anonymous'
+//      }
+//      return {name}
+//  }
   state = {
     
     msg : '',
     Latest : null,
     loading :true,
-    count:0
+    count:0,
+    name:'Anonymous'
   };
   constructor(props){
     super(props)
@@ -24,7 +35,12 @@ class ChatApp extends Component {
   }
   async componentDidMount(){
     console.log('%%%%%')
-    
+    axios.get('http://54.191.195.43:9999/users/'+this.props.id)
+    .then(data=>{this.setState({name:data.data.name})
+                console.log(data.data.name)
+})
+    .catch(this.setState({name:'Anonymous'}))
+    .catch(err=>console.log(err))
     console.log('orbit instantiated'+Obj)
     console.log('&&&')
 
@@ -86,7 +102,7 @@ class ChatApp extends Component {
     return this.state.Latest.map((e)=>{
       // var bytes  = CryptoJS.AES.decrypt(e.payload.value.msg, this.props.pass);
       // var originalText = bytes.toString(CryptoJS.enc.Utf8);
-        return <Chat latest = {e.payload.value} userId={this.state.userId} obj = {this.Obj} callback={this.restartSetState} pass={this.props.pass}/>
+        return <Chat latest = {e.payload.value} userId={this.state.name} obj = {this.Obj} callback={this.restartSetState} pass={this.props.pass}/>
     })
   }
 
@@ -107,14 +123,13 @@ class ChatApp extends Component {
     var date = today.getDate()+'/'+today.getMonth()+'/'+today.getFullYear();
     var time = today.getHours()+':'+today.getMinutes()+':'+today.getSeconds();
     var ciphertext = CryptoJS.AES.encrypt(this.state.msg, this.props.pass).toString();
-    var name='Anonymous'
-    axios.get('http://54.191.195.43:9999/users/'+this.props.id)
-    .then(data=>{name=data.name})
+    
+    
     // console.log(date+' '+time)
     // console.log('on submit%%%')
     // console.log('this.state.userId'+this.state.userId)
 
-    const entry={reply:false,userId:name, msg:ciphertext, date:date, time:time}
+    const entry={reply:false,userId:this.state.name, msg:ciphertext, date:date, time:time}
     // console.log(entry)
     // const entry1 = Obj.addingToDB(entry)
     // count++
