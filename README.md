@@ -30,6 +30,8 @@ https://www.youtube.com/watch?v=P-O4lJjbQ8Y
  * Clone the repository using `git clone https://github.com/pirateksh/OmniEther.git`.
  * Run `npm install`
  * Run `npm run dev` and then visit `localhost:3000`.
+ * Add our _GovEth_ custom token in MetaMask using this address `0xE942912000d1A1f30417ca263d58c9F87fd1F596`. For more information on how to add Custom Tokens in MetaMask visit `https://tokenmint.io/blog/how-to-add-your-custom-erc-token-to-metamask.html`.
+ * To configure _Matic testnet_ in _MetaMask_, visit `https://docs.matic.network/newbies/conf-testnet-metamask/`.
  * You are ready to go now...
 
 ## Technology Stack:-
