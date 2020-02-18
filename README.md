@@ -24,8 +24,13 @@ An Ethereum and IPFS based project to ensure transparency and security in Asset 
 https://www.youtube.com/watch?v=P-O4lJjbQ8Y
  
 ## Basic Flowchart describing our Hack.
-
 ![alt text](https://github.com/pirateksh/To-Be-Decided/blob/master/Flow_Chart.jpeg)
+
+## How to use ?
+ * Clone the repository using `git clone https://github.com/pirateksh/OmniEther.git`.
+ * Run `npm install`
+ * Run `npm run dev` and then visit `localhost:3000`.
+ * You are ready to go now...
 
 ## Technology Stack:-
     * Ethereum, 
