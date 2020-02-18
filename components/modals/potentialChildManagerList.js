@@ -5,12 +5,11 @@
 */
 import React, { Component } from 'react';
 import { Modal, Input, Form, Button, Message, Checkbox, Table } from 'semantic-ui-react';
-import Fund from '../../ethereum/fund';
-import web3 from '../../ethereum/web3';
-import { Router } from '../../routes';
+import axios from 'axios';
 import ChildManagerRow from '../../components/requestRows/potentialChildManagerRow';
 
 class ModalForm extends Component {
+
 
 	state = {
 		loading: false,
@@ -23,39 +22,41 @@ class ModalForm extends Component {
 		this.setState({ showModal: false });
 	}
 
-	renderRows(){
-		const { potentialChildManagers } = this.props;
-
-		return potentialChildManagers.map((potentialChildManager, index) => {
-			return <ChildManagerRow 
-				key={index}
-				id={index}
-				potentialChildManager={potentialChildManager}
-			/>
-		});
+	renderRows() {
+		const { potentialChildManagers ,names} = this.props;
+		
+			return potentialChildManagers.map((potentialChildManager, index) => {
+				return <ChildManagerRow
+					key={index}
+					id={index}
+					name={names[index]}
+					potentialChildManager={potentialChildManager}
+				/>
+			});
+	
 	}
 
 	render() {
 		const { Row, Cell, Header, HeaderCell, Body } = Table;
 		return (
 
-			<Modal 
-				onClose={this.close0x21A48bAa73B55CC7bbD4aD918530Dc8A1eE32A1fModal}
+			<Modal
+				onClose={this.closeModal}
 				open={this.state.showModal}
 				trigger={
-					<Button 
+					<Button
 						onClick={() => { this.setState({ showModal: true }) }}
-						style={{ marginTop: 10}}
+						style={{ marginTop: 10 }}
 						content="Deputy Managers"
 						icon="eye"
 						primary
 					/>
 				}
 			>
-			<Modal.Header>Potential Child Managers of {this.props.address }</Modal.Header>
-			    <Modal.Content>
-			     	<Modal.Description>
-			     		<Table>
+				<Modal.Header>Potential Child Managers of {this.props.address}</Modal.Header>
+				<Modal.Content>
+					<Modal.Description>
+						<Table>
 							<Header>
 								<Row>
 									<HeaderCell>ID</HeaderCell>
@@ -67,10 +68,10 @@ class ModalForm extends Component {
 								{this.renderRows()}
 							</Body>
 						</Table>
-			     		
-			      	</Modal.Description>
-			    </Modal.Content>
-			    
+
+					</Modal.Description>
+				</Modal.Content>
+
 			</Modal>
 		);
 	}

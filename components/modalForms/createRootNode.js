@@ -3,6 +3,7 @@ import { Modal, Input, Form, Button, Message } from 'semantic-ui-react';
 import factory from '../../ethereum/factory';
 import web3 from '../../ethereum/web3';
 import { Router } from '../../routes';
+import axios from 'axios';
 
 class ModalForm extends Component {
 	state = {
@@ -22,11 +23,12 @@ class ModalForm extends Component {
 		event.preventDefault();
 
 		this.setState({ loading: true, errorMessage: '' });
-
+		var authorized=false
 		try {
 
 			const accounts = await web3.eth.getAccounts();
-
+			await axios.get('http://54.191.195.43:9999/users/'+accounts[0])
+			authorized=true
 			console.log("accounts=:", accounts[0]);
 
 			await factory.methods.createRootNode(this.state.description, this.state.value)
@@ -45,6 +47,9 @@ class ModalForm extends Component {
 			Router.replaceRoute('/factory/rootFund');
 
 		} catch(err) {
+			if(!authorized)
+			this.setState({errorMessage:'User must be registered first, please register yourself '})
+			else
 			this.setState({ errorMessage: err.message });
 		}
 		this.setState({ loading: false });

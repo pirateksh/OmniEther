@@ -15,13 +15,13 @@ class ContentRow extends Component {
 	render() {
 
 		const { Row, Cell } = Table;
-		const { id, potentialChildManager } = this.props;
+		const { id, potentialChildManager,name } = this.props;
 
 		return (
 			<Row>
  				<Cell>{id}</Cell>
  				<Cell>{potentialChildManager}</Cell>
- 				<Cell>Under Progress</Cell>
+ 				<Cell>{name}</Cell>
 			</Row>
 		);
 	}

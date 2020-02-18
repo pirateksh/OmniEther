@@ -12,6 +12,10 @@ An Ethereum and IPFS based project to ensure transparency and security in Fund t
     • Node.js, React.js, Web3.js, Next.js
     • OrbitDB (decentralized database based on IPFS)
 
+## Instructions:
+    • npm i
+    • npm start	
+
 ## Contributors - Team EnigmaHaxx
 * Ankit Sangwan
 * Aritra Chatterjee

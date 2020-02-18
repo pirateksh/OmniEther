@@ -8,7 +8,9 @@ class RequestInformationIndex extends Component {
 
 	render() {
 		return (
-			<Layout>
+			<Layout
+			render={({setLoading,setNotLoading}) => (
+				<div>
 				<Segment textAlign='center' size='large' inverted color='grey'>
 					Types of Requests in Fund.
 				</Segment>
@@ -43,8 +45,9 @@ class RequestInformationIndex extends Component {
 				<Segment textAlign='center' size='large' color='grey'>
 					NOTE:  Go to any Fund's Instance to get more insight about requests.
 				</Segment>
-
-			</Layout>
+				</div>
+			)}
+			/>
 		);
 	}
 }

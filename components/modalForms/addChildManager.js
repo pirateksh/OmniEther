@@ -3,7 +3,7 @@ import { Modal, Input, Form, Button, Message } from 'semantic-ui-react';
 import Fund from '../../ethereum/fund';
 import web3 from '../../ethereum/web3';
 import { Router } from '../../routes';
-
+import axios from 'axios'
 class ModalForm extends Component {
 	state = {
 		loading: false,
@@ -21,7 +21,7 @@ class ModalForm extends Component {
 		event.preventDefault();
 
 		const { address } = this.props;
-
+		var authorized=false
 		this.setState({ loading: true, errorMessage: '' });
 
 		try {
@@ -29,7 +29,8 @@ class ModalForm extends Component {
 			const fund = Fund(address);
 
 			const accounts = await web3.eth.getAccounts();
-
+			await axios.get('http://54.191.195.43:9999/users/'+this.state.childManagerAddress)
+			authorized=true
 			await fund.methods.addPotentialChildManager(this.state.childManagerAddress).send({ 
 				from: accounts[0]
 			});
@@ -42,6 +43,10 @@ class ModalForm extends Component {
 			Router.replaceRoute(`/funds/${address}`);
 
 		} catch(err) {
+			console.log(err)
+			if(!authorized)
+			this.setState({errorMessage:'Potential manager must be registered first'})
+			else
 			this.setState({ errorMessage: err.message });
 		}
 		this.setState({ loading: false });

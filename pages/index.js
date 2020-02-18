@@ -101,7 +101,8 @@ renderGraph = ()=>{
 	render() {
 		
 		return (
-			<Layout>
+			<Layout
+			render={({setLoading,setNotLoading}) => (
 				<Segment placeholder raised style={{ marginTop: 50 }}>
 					<Grid columns={2} stackable textAlign='center'>
 						<Divider vertical> => </Divider>
@@ -133,8 +134,8 @@ renderGraph = ()=>{
 						</Grid.Row>
 					</Grid>
 				</Segment>
-				
-			</Layout>
+			)}
+			/>
 		);
 
 

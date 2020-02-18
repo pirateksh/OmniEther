@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 // import { Card, Button } from 'semantic-ui-react';
 import { Button, Card, Grid, Divider, Segment, Form, Input, Message } from 'semantic-ui-react'
 import Layout from '../../components/layout';
@@ -23,7 +23,7 @@ class ChildrenIndex extends Component {
 		var briefs = [];
 		for (var i = 0; i < childFunds.length; i++) {
 			var inst = Fund(childFunds[i]);
-			briefs[i] = await inst.methods.briefDescription().call();	
+			briefs[i] = await inst.methods.briefDescription().call();
 		}
 		// We have to change this as  here only Root Nodes are being fetched.
 
@@ -36,17 +36,19 @@ class ChildrenIndex extends Component {
 		Router.replaceRoute(`funds/${ this.state.fundAddress }`);
 	}*/
 
-	renderFunds() {
-		const items = this.props.childFunds.map((address,index) => {
+	renderFunds(setLoading) {
+		const items = this.props.childFunds.map((address, index) => {
 			// For each Campaign, does the following.
 			return {
 				header: address,
 				description: (
 					<div>
-					{this.props.briefs[index]} <br/>
-					<Link route='fundDetails' params={{ contractAddress: address }}>
-						<a>View Fund</a>
-					</Link>
+						{this.props.briefs[index]} <br />
+						<Link route='fundDetails' params={{ contractAddress: address }}>
+							<Button basic onClick={setLoading}>
+								<a>View Fund</a>
+							</Button>
+						</Link>
 					</div>
 				),
 				fluid: true
@@ -55,46 +57,48 @@ class ChildrenIndex extends Component {
 		return <Card.Group items={items} />
 	}
 
-	render () {
+	render() {
 		return (
-			<Layout>
+			<Layout
+				render={({ setLoading, setNotLoading }) => (
+					<div>
+						<Grid>
+							<Grid.Row>
+								<Grid.Column width={12}>
+									<Segment textAlign="center" inverted color="grey">
+										<h3>Child Funds of {this.props.address}</h3>
+									</Segment>
+								</Grid.Column>
+								<Grid.Column width={4}>
+									<Segment textAlign="center" inverted color="grey">
+										<h3>Actions</h3>
+									</Segment>
+								</Grid.Column>
+							</Grid.Row>
+						</Grid>
 
-				<Grid>
-					<Grid.Row>
-						<Grid.Column width={12}>
-							<Segment textAlign="center" inverted color="grey">
-								<h3>Child Funds of {this.props.address}</h3>
-							</Segment>
-						</Grid.Column>
-						<Grid.Column width={4}>
-							<Segment textAlign="center" inverted color="grey">
-								<h3>Actions</h3>
-							</Segment>
-						</Grid.Column>
-					</Grid.Row>
-				</Grid>
-	
-				<Grid>
-					<Grid.Row>
+						<Grid>
+							<Grid.Row>
 
-						<Grid.Column width={12}>
-							<Segment textAlign="center">
-							{this.renderFunds()}
-							</Segment>
-						</Grid.Column>
+								<Grid.Column width={12}>
+									<Segment textAlign="center">
+										{this.renderFunds(setLoading)}
+									</Segment>
+								</Grid.Column>
 
-						<Grid.Column width={4}>
-							<Segment textAlign="center">
-							
-								
+								<Grid.Column width={4}>
+									<Segment textAlign="center">
 
-							</Segment>
-						</Grid.Column>
 
-					</Grid.Row>
-				</Grid>
 
-			</Layout>
+									</Segment>
+								</Grid.Column>
+
+							</Grid.Row>
+						</Grid>
+					</div>
+				)}
+			/>
 		);
 	}
 }
@@ -128,5 +132,4 @@ export default ChildrenIndex;
 
 
 
-	
-							
+

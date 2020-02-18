@@ -25,14 +25,17 @@ class FactoryIndex extends Component {
 		Router.replaceRoute(`funds/${ this.state.fundAddress }`);
 	}*/
 
-	renderFunds() {
+	renderFunds(setLoading) {
 		const items = this.props.funds.map(address => {
 			// For each Campaign, does the following.
 			return {
 				header: address,
 				description: (
-					<Link route='fundDetails' params={{ contractAddress: address }}>
+					
+					<Link route='fundDetails' params={{ contractAddress: address }} >
+					<Button basic onClick={setLoading}>
 						<a>View Fund</a>
+						</Button>
 					</Link>
 				),
 				fluid: true
@@ -43,8 +46,10 @@ class FactoryIndex extends Component {
 
 	render () {
 		return (
-			<Layout>
 
+			<Layout
+				render={({setLoading,setNotLoading}) => (
+				<div>
 				<Grid>
 					<Grid.Row>
 						<Grid.Column width={12}>
@@ -65,7 +70,7 @@ class FactoryIndex extends Component {
 
 						<Grid.Column width={12}>
 							<Segment textAlign="center">
-							{this.renderFunds()}
+							{this.renderFunds(setLoading)}
 							</Segment>
 						</Grid.Column>
 
@@ -77,8 +82,10 @@ class FactoryIndex extends Component {
 
 					</Grid.Row>
 				</Grid>
-
-			</Layout>
+				</div>
+			)}
+			/>
+			
 		);
 	}
 }
