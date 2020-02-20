@@ -1,5 +1,5 @@
 # OmniEther (Hack36 2020 Project)
-An Ethereum and IPFS based project to ensure transparency and security in Asset transfer.
+An Ethereum and IPFS based project to ensure transparency and security in Asset transfer. Deployed at https://omni-ether.herokuapp.com/ .
 
 ## Central Theme: - Security and Surveillance
 * __Problem to be solved:-__ Maintaining transparency and security while transferring assets (money or important data) from top level to bottom level in a hierarchical organization/system thus ensuring that all intended assets reach bottom-most level without leakage.
