@@ -27,7 +27,7 @@ class ModalForm extends Component {
 		try {
 
 			const accounts = await web3.eth.getAccounts();
-			await axios.get('http://54.191.195.43:9999/users/'+accounts[0])
+			await axios.get('http://127.0.0.1:9999/users/'+accounts[0])
 			authorized=true
 			console.log("accounts=:", accounts[0]);
 

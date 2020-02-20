@@ -29,7 +29,7 @@ class RegistrationForm extends Component {
 		// console.log(uniqueID);
 		// console.log(phoneNumber);
 		// console.log(ethAddress);
-		axios.post('http://54.191.195.43:9999/users/add', { name,email,uniqueID,phoneNumber,ethAddress});
+		axios.post('http://127.0.0.1:9999/users/add', { name,email,uniqueID,phoneNumber,ethAddress});
 		this.setState({ loading: true });
 	}
 

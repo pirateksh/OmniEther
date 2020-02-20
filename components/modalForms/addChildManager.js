@@ -29,7 +29,7 @@ class ModalForm extends Component {
 			const fund = Fund(address);
 
 			const accounts = await web3.eth.getAccounts();
-			await axios.get('http://54.191.195.43:9999/users/'+this.state.childManagerAddress)
+			await axios.get('http://127.0.0.1:9999/users/'+this.state.childManagerAddress)
 			authorized=true
 			await fund.methods.addPotentialChildManager(this.state.childManagerAddress).send({ 
 				from: accounts[0]

@@ -12,7 +12,7 @@ class ChatApp extends Component {
 //  static async getInitialProps(props){
 //      let name
 //      try{
-//          const data=axios.get('http://54.191.195.43:9999/users/'+props.id)
+//          const data=axios.get('http://127.0.0.1:9999/users/'+props.id)
 //          name=data.data.name
 //          console.log(name)
 //      }catch(err){
@@ -35,7 +35,7 @@ class ChatApp extends Component {
   }
   async componentDidMount(){
     console.log('%%%%%')
-    axios.get('http://54.191.195.43:9999/users/'+this.props.id)
+    axios.get('http://127.0.0.1:9999/users/'+this.props.id)
     .then(data=>{this.setState({name:data.data.name})
                 console.log(data.data.name)
 })

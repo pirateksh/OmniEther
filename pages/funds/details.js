@@ -74,7 +74,7 @@ class FundDetails extends Component {
 		}
 		let dbaddress, hash, isChannelCreated
 		try {
-			const data = await axios.get('http://54.191.195.43:9999/channel/' + props.query.contractAddress)
+			const data = await axios.get('http://127.0.0.1:9999/channel/' + props.query.contractAddress)
 
 			dbaddress = data.data.address
 			hash = data.data.hash
@@ -85,7 +85,7 @@ class FundDetails extends Component {
 		
 		const nameProps=await Promise.all(summary[5].map(async(pcm,idx)=>{
 			try{
-			const data=await axios.get('http://54.191.195.43:9999/users/' + pcm)
+			const data=await axios.get('http://127.0.0.1:9999/users/' + pcm)
 			return data.data.name
 			}catch(e){return 'Anonymous'}
 			
@@ -206,7 +206,7 @@ class FundDetails extends Component {
 		var hash = bcrypt.hashSync(this.state.passEntered, salt);
 		
 		const response = await axios.post(
-			'http://54.191.195.43:9999/channel/create',
+			'http://127.0.0.1:9999/channel/create',
 			{
 				name: this.props.address, hash: hash
 			},

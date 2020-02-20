@@ -34,7 +34,7 @@ class RegistrationForm extends Component {
       // console.log(ethAddress);
       var salt = bcrypt.genSaltSync(10);
       var passHash = bcrypt.hashSync(this.state.password, salt);
-      axios.post('http://54.191.195.43:9999/users/add', { name: name, email: email, uid: uniqueID, phoneNo: phoneNumber, ethAddress: accounts[0], passHash: passHash })
+      axios.post('http://127.0.0.1:9999/users/add', { name: name, email: email, uid: uniqueID, phoneNo: phoneNumber, ethAddress: accounts[0], passHash: passHash })
          .then(_ => this.setState({ loading: false,showModal:false }))
          .catch(err => {
             

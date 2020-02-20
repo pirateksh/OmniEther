@@ -1,6 +1,6 @@
 const IPFS = require('ipfs')
 const OrbitDB = require('orbit-db')
-const MASTER_MULTIADDR = '/ip4/54.191.195.43/tcp/4002/ws/ipfs/QmSnZApBKGea2C3j6r7bWGCZWQQjpsmAhhBKaNVNVGnUJw'
+const MASTER_MULTIADDR = '/ip4/127.0.0.1/tcp/4002/ws/ipfs/QmSnZApBKGea2C3j6r7bWGCZWQQjpsmAhhBKaNVNVGnUJw'
 // const MASTER_MULTIADDR= '/dns4/ws-star.discovery.libp2p.io/wss/p2p-websocket-star/ipfs/QmTQ1ttKqWxwWNTrqF1Qv2Pg92kDwL7bkrrPhXdgXwMTQN'
 // /ip4/172.29.38.17/tcp/4002/ipfs/QmTAzJVyka9KStvBiGcB2xs8ByBJRL34KeaM9atMEHUbjf
 let DB_ADDRESS
@@ -32,7 +32,7 @@ class Orbit {
             config: {
                 "Bootstrap": [
                     MASTER_MULTIADDR,
-                    '/ip4/54.191.195.43/tcp/4001/ipfs/QmSnZApBKGea2C3j6r7bWGCZWQQjpsmAhhBKaNVNVGnUJw',
+                    '/ip4/127.0.0.1/tcp/4001/ipfs/QmSnZApBKGea2C3j6r7bWGCZWQQjpsmAhhBKaNVNVGnUJw',
                     // // '/dnsaddr/bootstrap.libp2p.io/ipfs/QmNnooDu7bfjPFoTZYxMNLWUQJyrVwtbZg5gBMjTezGAJN',
                     // // "/dnsaddr/bootstrap.libp2p.io/ipfs/QmQCU2EcMqAqQPR2i9bChDtGNJchTbq5TbXJJ16u19uLTa",
                     // // "/dnsaddr/bootstrap.libp2p.io/ipfs/QmbLHAnMoJPWSCR5Zhtx6BHJX9KiKNN6tpvbUcqanj75Nb",
