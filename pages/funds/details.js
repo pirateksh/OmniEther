@@ -82,9 +82,17 @@ class FundDetails extends Component {
 		} catch (err) {
 			isChannelCreated = false
 		}
-
-
-		console.log(tenderAddress.toString());
+		
+		const nameProps=await Promise.all(summary[5].map(async(pcm,idx)=>{
+			try{
+			const data=await axios.get('http://54.191.195.43:9999/users/' + pcm)
+			return data.data.name
+			}catch(e){return 'Anonymous'}
+			
+		})
+		)
+		
+		// console.log(tenderAddress.toString());
 		// console.log(companyAlloted.toString());
 
 		// Setting canFloatTender
@@ -96,6 +104,7 @@ class FundDetails extends Component {
 			parent: summary[3],
 			childFunds: summary[4],
 			potentialChildManagers: summary[5],
+			pcmNames: nameProps,
 			isLastLevel: summary[6],
 			currentBalance: balance,
 			tenderAddress: tenderAddress,
@@ -118,7 +127,9 @@ class FundDetails extends Component {
 		loggedIn: false,
 		loading: false,
 		passEntered: '',
-		address: ''
+		address: '',
+		isChannelCreated:this.props.isChannelCreated,
+		errorMessage:''
 	}
 
 	// Helper method to render cards
@@ -193,44 +204,7 @@ class FundDetails extends Component {
 		this.setState({ loading: true })
 		var salt = bcrypt.genSaltSync(10);
 		var hash = bcrypt.hashSync(this.state.passEntered, salt);
-		// 	axios.post('http://54.191.195.43:9999/channel/create/',
-		// 			{name:this.props.address,hash:hash})
-		// 			.then(_=>{this.setState({loading:false})
-		// 			this.props.isChannelCreated=true
-		// })			
-
-
-		// const data = JSON.stringify({
-		// 	name:this.props.address,hash:hash
-		// })
-		// console.log(data)
-		// const options = {
-		//   hostname: '54.191.195.43',
-		//   port: 9999,
-		//   path: '/channel/create',
-		//   method: 'POST',
-		//   headers: {
-		// 	'Content-Type': 'application/json',
-		// 	'Content-Length': data.length
-		//   }
-		// }
-
-		// const req = https.request(options, res => {
-		//   console.log(`statusCode: ${res.statusCode}`)
-
-		//   res.on('data', d => {
-		// 	process.stdout.write(d)
-		//   })
-		// })
-
-		// req.on('error', error => {
-		//   console.error(error)
-		// })
-
-		// req.write(data)
-		// req.end()
-
-		// }
+		
 		const response = await axios.post(
 			'http://54.191.195.43:9999/channel/create',
 			{
@@ -239,15 +213,17 @@ class FundDetails extends Component {
 			{ headers: { 'Content-Type': 'application/json' } }
 		)
 		console.log(response.data)
+		this.setState({loading:false,visible:false,isChannelCreated:true})
+		
 	}
 	loginSubmit = (event) => {
 		event.preventDefault()
-
+		this.setState({errorMessage:''})
 		if (bcrypt.compareSync(this.state.passEntered, this.props.hash)) {
 			this.setState({ loggedIn: true })
 		}
 		else
-			console.log('Password doesnt match') //TODO
+			this.setState({errorMessage:"Invalid password!"})
 
 
 
@@ -274,19 +250,19 @@ class FundDetails extends Component {
 	showLoginForm() {
 		return (<div>
 			<h3>{"Login to channel"}</h3>
-			<Form>
+			<Form error={!!this.state.errorMessage}>
 				<Form.Field>
 					<label>Password</label>
 					<input type='password' placeholder='Enter password' onChange={event => this.setState({ passEntered: event.target.value })} />
 				</Form.Field>
-
+				<Message error header="Oops!" content={this.state.errorMessage} />
 				<Button type='submit' onClick={this.loginSubmit} loading={this.state.loading}>Submit</Button>
 			</Form>
 		</div>)
 	}
 
 	render() {
-
+		console.log(this.props.pcmNames)
 		return (
 			<Sidebar.Pushable as={Segment}>
 				<Sidebar
@@ -297,7 +273,7 @@ class FundDetails extends Component {
 					vertical
 					visible={this.state.visible}
 					width='very wide'>
-					{!this.props.isChannelCreated
+					{!this.state.isChannelCreated
 						? this.showCreationForm()
 						: (this.state.loggedIn ? <ChatApp address={this.props.dbaddress} pass={this.state.passEntered} id={this.props.thisAcc} /> : this.showLoginForm())}
 					{/* <ChatApp/> */}
@@ -305,7 +281,9 @@ class FundDetails extends Component {
 
 				<Sidebar.Pusher>
 					<Segment basic>
-					<Layout>
+					<Layout
+					render={({setLoading,setNotLoading}) => (
+						<div>
 						<Grid>
 							<Grid.Row>
 								<Grid.Column width={10}>
@@ -340,7 +318,9 @@ class FundDetails extends Component {
 									
 											<PotentialChildManagersModal
 												address={this.props.address}
-												potentialChildManagers={this.props.potentialChildManagers}/>
+												potentialChildManagers={this.props.potentialChildManagers}
+													names={this.props.pcmNames}
+												/>
 									
 
 										{this.props.isTenderFinalized ? (
@@ -373,6 +353,7 @@ class FundDetails extends Component {
 														('View Child Requests') : (
 															'Milestone Completion Requests By Company'
 														)}
+													// onClick={setLoading}	
 												/>
 											</a>
 										</Link>
@@ -385,7 +366,9 @@ class FundDetails extends Component {
 													content={!this.props.isLastLevel ?
 														('View Manager Requests') :
 														('Milestone Assignment by Manager')
+														
 													}
+													onClick={setLoading}
 												/>
 											</a>
 										</Link>
@@ -398,6 +381,7 @@ class FundDetails extends Component {
 														icon='eye'
 														style={{ marginTop: 10 }}
 														content='View Child Funds'
+														onClick={setLoading}
 													/>
 												</a>
 											</Link>
@@ -448,7 +432,9 @@ class FundDetails extends Component {
 
 							</Grid.Row>
 						</Grid>
-					</Layout>
+						</div>
+					)}
+					/>
 					</Segment>
 				</Sidebar.Pusher>
 			</Sidebar.Pushable>

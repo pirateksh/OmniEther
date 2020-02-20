@@ -36,8 +36,10 @@ class RegistrationForm extends Component {
 	render() {
 
 		return (
-			<Layout>
+			<Layout
+			render={({setLoading,setNotLoading}) => (
 			<Card  size='huge'>
+				<Card.Header><h4>Register</h4></Card.Header>
 				<Card.Content>
 				<Form onSubmit={this.onSubmit} error={!!this.state.errorMessage}>
 					<Form.Field>
@@ -96,7 +98,8 @@ class RegistrationForm extends Component {
 				</Form>
 				</Card.Content>
 				</Card>
-			</Layout>
+			)}
+			/>
 		);
 
 	}

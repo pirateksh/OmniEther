@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { Comment, Grid, Form, Button, Checkbox, Divider } from 'semantic-ui-react'
 import { Collapse } from 'react-collapse';
 import Worker from '../ipfs/worker'
+import logo from './profile.png'
 var CryptoJS = require("crypto-js");
 
 let wk;
@@ -53,10 +54,10 @@ export default class chat extends Component {
             console.log('msg user id' + this.props.latest.userId + ' curr userid ' + this.props.userId)
             return (
                 <Grid>
-                    <Grid.Column floated={this.checkUser()?'right':'left'} width={15}>
+                    <Grid.Column floated={this.checkUser()?'right':'left'} width={10}>
                         <Comment.Group >
-                            <Comment key={this.props.latest.time + this.props.latest.date + this.props.userId + this.props.latest.msg} style={{float:'left',backgroundColor:'white'}}>
-                                <Comment.Avatar src='https://react.semantic-ui.com/images/avatar/small/elliot.jpg' />
+                            <Comment key={this.props.latest.time + this.props.latest.date + this.props.userId + this.props.latest.msg} style={{backgroundColor:'white',borderRadius:'25px'}}>
+                                <Comment.Avatar src={logo} />
                                 <Comment.Content>
                                     {/* <Comment.Author>{this.props.latest.replyOfUserId.}</Comment.Author> */}
                                     <Comment.Author >{this.props.latest.replyOfUserId}</Comment.Author>
@@ -70,7 +71,7 @@ export default class chat extends Component {
                                 <Divider />
                                 <Comment.Group>
                                     <Comment >
-                                        <Comment.Avatar src='https://react.semantic-ui.com/images/avatar/small/jenny.jpg' />
+                                        <Comment.Avatar src={logo} />
                                         <Comment.Content>
                                             <Comment.Author>{this.props.latest.userId}</Comment.Author>
                                             {/* <Comment.Author >{'abc'}</Comment.Author> */}
@@ -102,10 +103,10 @@ export default class chat extends Component {
             console.log('msg user id' + this.props.latest.userId + ' curr userid ' + this.props.userId)
             return (
                 <Grid>
-                    <Grid.Column floated={this.checkUser()?'right':'left'} width={15}>
+                    <Grid.Column floated={this.checkUser()?'right':'left'} width={10}>
                         <Comment.Group >
-                            <Comment key={this.props.latest.time + this.props.latest.date + this.props.latest.userId + this.props.latest.msg} style={{backgroundColor:'white'}}>
-                                <Comment.Avatar as='a' src='https://react.semantic-ui.com/images/avatar/small/joe.jpg' />
+                            <Comment key={this.props.latest.time + this.props.latest.date + this.props.latest.userId + this.props.latest.msg} style={{backgroundColor:'white',borderRadius:'25px'}}>
+                                <Comment.Avatar as='a' src={logo} />
                                 <Comment.Content>
                                     <Comment.Author>{this.props.latest.userId}</Comment.Author>
                                     {/* <Comment.Author >{'abc'}</Comment.Author> */}

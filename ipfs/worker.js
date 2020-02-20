@@ -92,10 +92,12 @@ class Orbit {
                 // await db.events.on('replicated',()=>{console.log('Replication fired!!!')})
             
         } catch (e) {
+            window.ipfs.stop();
             console.log('eroooor')
             console.error(e)
             process.exit(1)
         }
+       
     }
     //             identity = orbitdb.identity.id
     //             console.log('connecting database')

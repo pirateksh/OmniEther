@@ -51,7 +51,7 @@ class ModalForm extends Component {
 				onClose={this.closeModal}
 				open={this.state.showModal}
 				trigger={
-					<Button  
+					<Button  basic
 						onClick={() => { this.setState({ showModal: true }) }}
 						
 						content="GovEth Tokens"

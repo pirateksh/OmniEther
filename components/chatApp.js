@@ -1,7 +1,7 @@
 // import './App.css';
 import Orbit from '../ipfs/worker';
 import React, {Component} from 'react';
-import { Form,Input,Button } from 'semantic-ui-react'
+import { Form,Input,Button, Loader } from 'semantic-ui-react'
 import Chat from './chat';
 import { animateScroll as scroll} from 'react-scroll'
 var CryptoJS = require("crypto-js");
@@ -40,7 +40,6 @@ class ChatApp extends Component {
                 console.log(data.data.name)
 })
     .catch(this.setState({name:'Anonymous'}))
-    .catch(err=>console.log(err))
     console.log('orbit instantiated'+Obj)
     console.log('&&&')
 
@@ -143,11 +142,11 @@ class ChatApp extends Component {
     this.onReplication()
     if(this.state.Latest!==null){
   return (
-    <div >
+    <div style={{backgroundColor:'#c3d0e6'}}>
       
       {this.renderComment()}
         <footer>
-            <Form onSubmit={this.onSubmit} style={{position:'relative',marginTop:'500px'}}>
+            <Form onSubmit={this.onSubmit} style={{position:'relative',marginTop:'200px'}}>
               <Input
                 value={this.state.msg}
                 onChange={event => this.setState({msg: event.target.value})}
@@ -166,7 +165,7 @@ class ChatApp extends Component {
           
       <body><p>No such Messages</p></body>
         <footer>
-            <Form onSubmit={this.onSubmit} style={{position:'relative',marginTop:'500px'}}>
+            <Form onSubmit={this.onSubmit} style={{position:'relative',marginTop:'200px'}}>
               <Input
                 value={this.state.msg}
                 onChange={event => this.setState({msg: event.target.value})}
@@ -182,7 +181,7 @@ class ChatApp extends Component {
     }
   }
     else{
-      return(<h1>Hello</h1>);
+      return(<div><Loader>Loading Chat</Loader></div>);
     }
   }
 }

@@ -48,7 +48,9 @@ class RequestIndex extends Component {
 		// Destructuring from Table component to reduce length of code
 		const { Header, Row, HeaderCell, Body } = Table;
 		return (
-			<Layout>
+			<Layout
+			render={({setLoading,setNotLoading}) => (
+				<div>
 				<h3>New Child Node Creation Request (By Current Manager)</h3>
 				<div>Found {this.props.requestCount} requests.</div>
 				<ModalForm 
@@ -71,8 +73,9 @@ class RequestIndex extends Component {
 						{this.renderRows()}
 					</Body>
 				</Table>
-				
-			</Layout>
+				</div>
+			)}
+			/>
 		);
 	}
 }
