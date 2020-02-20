@@ -46,10 +46,6 @@ https://www.youtube.com/watch?v=P-O4lJjbQ8Y
     * Express.js(to create API to fetch chats from OrbitDB)
     * OrbitDB (decentralized database based on IPFS)
 
-## Instructions:
-    • npm i
-    • npm start	
-
 ## Contributors - Team EnigmaHaxx
 * <a href="https://github.com/ankitsangwan1999">Ankit Sangwan</a>
 * <a href="https://github.com/arc29">Aritra Chatterjee</a>
