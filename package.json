@@ -4,9 +4,7 @@
   "description": "Ethereum Project for Hack36",
   "main": "index.js",
   "scripts": {
-    "build": "next build",
-    "dev": "node server.js",
-    "export": "next export",
+    
     "start": "next build && next start"
   },
   "author": "",
