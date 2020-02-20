@@ -7,11 +7,12 @@
     "build": "next build",
     "dev": "node server.js",
     "export": "next export",
-    "start":"next start"
+    "start": "next start"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@zeit/next-css": "^1.0.1",
     "axios": "^0.19.2",
     "bcryptjs": "^2.4.3",
     "crypto-js": "^4.0.0",

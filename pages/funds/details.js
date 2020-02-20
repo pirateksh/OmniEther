@@ -353,7 +353,7 @@ class FundDetails extends Component {
 														('View Child Requests') : (
 															'Milestone Completion Requests By Company'
 														)}
-													onClick={setLoading}	
+													// onClick={setLoading}	
 												/>
 											</a>
 										</Link>
