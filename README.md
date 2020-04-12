@@ -1,5 +1,9 @@
-# OmniEther (Hack36 2020 Project)
-An Ethereum and IPFS based project to ensure transparency and security in Asset transfer. Deployed at https://omni-ether.herokuapp.com/ .
+# OmniEther (EthIndia Online Hackathon 2020 and Hack36 2020 Project)
+
+OmniEther is an IPFS based decentralised application that uses the power of Ethereum smart contracts to eliminate corruption in funds passed down in an organisation. Using a self duplicating, tree-based collection of smart contracts, funds are passed from parent to child contracts(signifying levels in an organisation), and the validity of every transaction is ensured due to the transparent nature of the Ethereum blockchain. Deployed at https://omni-ether.herokuapp.com/ .
+
+## Prizes Won:-
+* Bagged __Special Mention__ in __EthIndia Online Hackathon__, Asia's Biggest Ethereum Hackathon. Results @ https://devfolio.co/blog/announcing-winners-of-ethindia-online-hackathon/
 
 ## Central Theme: - Security and Surveillance
 * __Problem to be solved:-__ Maintaining transparency and security while transferring assets (money or important data) from top level to bottom level in a hierarchical organization/system thus ensuring that all intended assets reach bottom-most level without leakage.
