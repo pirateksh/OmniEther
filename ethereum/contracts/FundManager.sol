@@ -1,9 +1,12 @@
 pragma solidity ^0.4.17;
 
 contract Factory {
+    // Stores address of Roots of Deployed Contracts.
+    address[] public deployedRoots; 
+
+    // Checks in O(1) whether a given address is Deployed Root or Not.
+    mapping(address => bool) public isDeployedRoot; 
     
-    address[] public deployedRoots;
-    mapping(address => bool) public isDeployedRoot;
     address temp;
     
     function createRootNode(string description_) public payable {
