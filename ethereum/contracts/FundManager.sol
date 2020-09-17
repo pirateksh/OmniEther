@@ -7,7 +7,8 @@ contract Factory {
     // Checks in O(1) whether a given address is Deployed Root or Not.
     mapping(address => bool) public isDeployedRoot; 
     
-    address temp;
+    // To pass 0 as address of parent of root node
+    address temp; 
     
     function createRootNode(string description_) public payable {
         address newFund = new Fund(description_, temp, msg.sender, address(this), false);
@@ -104,6 +105,7 @@ contract Fund {
         factory = Factory(factoryAddress);
 
         if(newParent == 0) {
+        	// This means that this node is root node
             parent = address(this);
             parentManager = manager;
         }
