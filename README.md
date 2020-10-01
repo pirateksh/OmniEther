@@ -42,7 +42,7 @@ https://www.youtube.com/watch?v=P-O4lJjbQ8Y
 ## Technology Stack:-
     * Ethereum, 
     * Solidity(to write Smart Contract), 
-    * Matic(for deploying Smart Contract), 
+    * Matic(for deploying Smart Contract)
     * ERC20 token,
     * Node.js (for backend), 
     * React.js(for frontend), 
