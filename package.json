@@ -11,7 +11,7 @@
   "license": "ISC",
   "dependencies": {
     "@zeit/next-css": "^1.0.1",
-    "axios": "^0.19.2",
+    "axios": "^0.21.1",
     "bcryptjs": "^2.4.3",
     "crypto-js": "^4.0.0",
     "etherscan-api": "^10.0.5",
